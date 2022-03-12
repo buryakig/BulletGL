@@ -5,9 +5,13 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 
 project(BulletGL)
 
-add_executable(BulletGL src/BulletGL/Camera.cpp
+add_library(BulletGL 	STATIC
+						src/BulletGL/Camera.cpp
 						src/BulletGL/Camera.h
-						src/BulletGL/Programm.cpp
+						src/BulletGL/Core.h
+						src/BulletGL/Render.h
+						src/BulletGL/Render.cpp
+#						src/BulletGL/Programm.cpp
 						src/BulletGL/Shader.cpp
 						src/BulletGL/Shader.h
 						src/BulletGL/Window.cpp
@@ -29,4 +33,6 @@ target_link_libraries(BulletGL PRIVATE glm)
 add_subdirectory(submodules/glad ${CMAKE_CURRENT_BINARY_DIR}/extern/glad)
 target_link_libraries(BulletGL PRIVATE glad)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT BulletGL)
+add_subdirectory(examples ${CMAKE_CURRENT_BINARY_DIR}/examples)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Sandbox)

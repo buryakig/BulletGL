@@ -1,12 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Core.h"
 
 namespace Enum
 {
-	enum CameraMovement {
+	enum class CameraMovement {
 		FORWARD,
 		BACKWARD,
 		LEFT,

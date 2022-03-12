@@ -25,13 +25,13 @@ glm::mat4 Camera::GetProjectionMatrix(float aspect)
 void Camera::ProcessMovement(Enum::CameraMovement direction, float deltaTime)
 {
 	float velocity = MovementSpeed * deltaTime;
-    if (direction == Enum::FORWARD)
+    if (direction == Enum::CameraMovement::FORWARD)
         Position += Front * velocity;
-    if (direction == Enum::BACKWARD)
+    if (direction == Enum::CameraMovement::BACKWARD)
         Position -= Front * velocity;
-    if (direction == Enum::LEFT)
+    if (direction == Enum::CameraMovement::LEFT)
         Position -= Right * velocity;
-    if (direction == Enum::RIGHT)
+    if (direction == Enum::CameraMovement::RIGHT)
         Position += Right * velocity;
 }
 

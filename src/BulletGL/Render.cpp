@@ -1,9 +1,8 @@
-#include <iostream>
-#include <string>
 
-#include <glad/glad.h>
+#include "Core.h"
         
 #include "Window.h"
+#include "Render.h"
 
 #include "Time.h"
 #include "Shader.h"
@@ -40,7 +39,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
-int main()
+int render()
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -197,13 +196,13 @@ int main()
 void CameraMove(GLFWwindow* window, double deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        MainCamera.ProcessMovement(Enum::FORWARD, deltaTime);
+        MainCamera.ProcessMovement(Enum::CameraMovement::FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        MainCamera.ProcessMovement(Enum::BACKWARD, deltaTime);
+        MainCamera.ProcessMovement(Enum::CameraMovement::BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        MainCamera.ProcessMovement(Enum::LEFT, deltaTime);
+        MainCamera.ProcessMovement(Enum::CameraMovement::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        MainCamera.ProcessMovement(Enum::RIGHT, deltaTime);
+        MainCamera.ProcessMovement(Enum::CameraMovement::RIGHT, deltaTime);
 }
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
