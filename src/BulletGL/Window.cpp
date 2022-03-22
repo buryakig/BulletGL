@@ -5,6 +5,13 @@ Window::Window()
 	instance = NULL;
 }
 
+Window::Window(int w, int h)
+{
+	instance = NULL;
+    width = w;
+    height = h;
+}
+
 void Window::Initialize()
 {
 	glfwInit();
@@ -49,10 +56,10 @@ void Window::SetCurrent()
     glfwMakeContextCurrent(this->instance);
 }
 
-//void Window::DestroyResources()
-//{
-//    glfwTerminate();
-//}
+void Window::DestroyResources()
+{
+    glfwTerminate();
+}
 
 void Window::ProcessInput()
 {
@@ -63,6 +70,11 @@ void Window::ProcessInput()
 void Window::SwapBuffers()
 {
     glfwSwapBuffers(this->instance);
+}
+
+void Window::PollEvents()
+{
+    glfwPollEvents();
 }
 
 void Window::Close()

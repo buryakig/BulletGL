@@ -11,15 +11,16 @@ public:
 	float aspectRatio;
 
 	Window();
+	Window(int w, int h);
 
 	void Initialize();
 	void SetCurrent();
-	//void DestroyResources();
+	void DestroyResources();
 	void ProcessInput();
 	void SwapBuffers();
+	void PollEvents();
 	void Close();
 	void RecalculateSize();
-	//void PollEvents();
 
 	bool ShouldClose();
 	bool Create(const std::string& name, const int& width, const int& height);

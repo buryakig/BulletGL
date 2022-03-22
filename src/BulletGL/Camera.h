@@ -1,54 +1,42 @@
 #pragma once
+#include "Transform.h"
+#include "Mesh.h"
+#include "Window.h"
+#include "Shader.h"
 
-#include "Core.h"
 
-namespace Enum
-{
-	enum class CameraMovement {
-		FORWARD,
-		BACKWARD,
-		LEFT,
-		RIGHT
-	};
-}
-// Default camera values
-const float YAW = -90.0f;
-const float PITCH = 0.0f;
-const float SPEED = 10.0f;
-const float SENSITIVITY = 0.2f;
-const float ZOOM = 60.0f;
-const float NEAR_PLANE = 0.1f;
-const float FAR_PLANE = 1000.0f;
 
 class Camera
 {
 public:
-	// camera attributes
-	glm::vec3 Position;
-	glm::vec3 Front;
-	glm::vec3 Up;
-	glm::vec3 Right;
-	glm::vec3 WorldUp;
-	// euler angels
-	float Yaw;
-	float Pitch;
-	// camera options
-	float MovementSpeed;
-	float MouseSensitivity;
-	float FieldOfView;
-	float NearPlane;
-	float FarPlane;
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-		float fieldOfView = ZOOM, float nearPlane = NEAR_PLANE, float farPlane = FAR_PLANE);
-	
-	glm::mat4 GetViewMatrix();
-	glm::mat4 GetProjectionMatrix(float aspect);
+	Camera(Window* w) : fov(60)
+	{
+		window = w;
+		transform = new Transform();
+		transform->position = glm::vec3(0.0, 0.0, -10.0);
+	}
 
-	void ProcessMovement(Enum::CameraMovement direction, float deltaTime);
-	void ProcessMouseMovement(float xoffset, float yofset);
+	~Camera()
+	{
+		delete transform;
+	}
 
-private:
-	void UpdateVectors();
+	Window* window;
+	Transform* transform;
+
+	glm::mat4 cameraToWorldMatrix;
+	glm::mat4 viewProjectionMatrix;
+
+
+
+	float fov;
+
+	void SetUp();
+	void Update();
+
+	void ProcessMovement();
+
+	void DrawMesh(Mesh& mesh, glm::mat4 matrix, const Shader& material);
+
 };
-

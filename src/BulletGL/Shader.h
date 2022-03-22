@@ -2,7 +2,6 @@
 #define SHADER_H
 
 #include "Core.h"
-#include "Camera.h"
 
 class Shader
 {
@@ -10,11 +9,12 @@ public:
 	unsigned int programID;
 
 	// constructor reads and builds the shader
+	Shader() {};
 	Shader(const char* vertexPath, const char* fragmentPath);
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
 	~Shader() { glDeleteProgram(programID); }
 	// use/activate the shader
-	void use();
+	void use() const;
 	// utility uniform functions
 	void setBool(const std::string& name, bool value) const;
 	void setInt(const std::string& name, int value) const;

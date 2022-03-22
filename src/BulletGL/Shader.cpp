@@ -200,7 +200,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 	shaderList.push_back(this);
 }
 
-void Shader::use()
+void Shader::use() const
 {
 	glUseProgram(programID);
 }
