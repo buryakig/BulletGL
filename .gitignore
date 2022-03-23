@@ -11,5 +11,7 @@ CTestTestfile.cmake
 _deps
 
 #Custom ignore
-build/
+.bootstrap.json
 
+build/
+submodules/src/
