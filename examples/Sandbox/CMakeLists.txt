@@ -9,13 +9,7 @@ SETUP_GROUPS("${HEADER_FILES}")
 
 add_executable(${EXAMPLE_NAME}  ${SRC_FILES} ${HEADER_FILES})
 
-target_include_directories(${EXAMPLE_NAME} PRIVATE ../../include/)
-target_include_directories(${EXAMPLE_NAME} PRIVATE ../../src/BulletGL/)
 target_include_directories(${EXAMPLE_NAME} PRIVATE src/Sandbox/)
-
-target_include_directories(${EXAMPLE_NAME} PRIVATE ../../submodules/glad/include/)
-target_include_directories(${EXAMPLE_NAME} PRIVATE ../../submodules/glfw/include/)
-target_include_directories(${EXAMPLE_NAME} PRIVATE ../../submodules/glm/)
 
 if(MSVC)
 	add_definitions(-D_CONSOLE)
@@ -23,3 +17,4 @@ if(MSVC)
 endif()
 
 target_link_libraries(${EXAMPLE_NAME} PRIVATE ${PROJECT_NAME})
+
