@@ -16,6 +16,7 @@ glm::mat4 quadModel;
 void Application::OnStart()
 {
     mainCamera = new Camera(this->window);
+    mainCamera->SetUp();
 
     quad.vertices = std::vector<glm::vec3>{
             glm::vec3(0.5f,  0.5f, -5.0f),  // top right
@@ -33,13 +34,12 @@ void Application::OnStart()
     quad.Prepare();
     
     quadShader = new Shader("res/Shaders/solidColor.vert", "res/Shaders/solidColor.frag");
-
 }
 
 void Application::OnUpdate()
 {
     mainCamera->Update();
-
+        
     mainCamera->DrawMesh(quad, quadModel, *quadShader);
 }
 

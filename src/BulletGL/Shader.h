@@ -12,7 +12,11 @@ public:
 	Shader() {};
 	Shader(const char* vertexPath, const char* fragmentPath);
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
-	~Shader() { glDeleteProgram(programID); }
+	~Shader() {
+		remove(shaderList.begin(), shaderList.end(), this);
+		glDeleteProgram(programID); 
+	
+	}
 	// use/activate the shader
 	void use() const;
 	// utility uniform functions

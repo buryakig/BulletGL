@@ -8,13 +8,40 @@ float pitch = 0.0f;
 
 bool firstMouse = true;
 
+void Camera::SetUp()
+{
+    CreateCameraDataBuffer();
+}
+
 void Camera::Update()
 {
     ProcessMovement();
 
     cameraToWorldMatrix = glm::lookAt(transform->position, transform->position + transform->forward, transform->up);
     viewProjectionMatrix = glm::perspective(glm::radians(fov), 1600.0f / 980.0f, 0.1f, 100.0f);
+
+    UpdateCameraDataBuffer();
 }
+
+void Camera::CreateCameraDataBuffer()
+{
+    int fd;;
+    int camBufferSize = sizeof(PerFrameCameraData);
+
+    glCreateBuffers(1, &cameraUniformBuffer);
+    glNamedBufferStorage(cameraUniformBuffer, camBufferSize, nullptr, GL_DYNAMIC_STORAGE_BIT);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 1, cameraUniformBuffer, 0, camBufferSize);
+}
+
+void Camera::UpdateCameraDataBuffer()
+{
+    int camBufferSize = sizeof(PerFrameCameraData);
+    cameraData.mvp = viewProjectionMatrix * cameraToWorldMatrix;
+    cameraData.cameraPos = transform->position;
+
+    glNamedBufferSubData(cameraUniformBuffer, 0, camBufferSize, &cameraData);
+}
+
 
 void Camera::ProcessMovement()
 {
@@ -80,8 +107,6 @@ void Camera::ProcessMovement()
 void Camera::DrawMesh(Mesh& mesh, glm::mat4 matrix, const Shader& material)
 {
     material.use();
-    glm::mat4 MVP = viewProjectionMatrix * cameraToWorldMatrix * matrix ;
-    material.setMatrix("_MVP", MVP);
     mesh.Draw();
 }
 

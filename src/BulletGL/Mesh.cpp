@@ -35,16 +35,16 @@ void Mesh::Prepare()
 
     const int verticies_size_bytes = vertices.size() * sizeof(vertices[0]);
 
-    glGenVertexArrays(1, &VAO);
+    glCreateVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    glGenBuffers(1, &VBO);
+    glCreateBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, verticies_size_bytes, vertices.data(), GL_STATIC_DRAW);
 
     if (!indices.empty())
     {
         const int indices_size_bytes = indices.size() * sizeof(indices[0]);
-        glGenBuffers(1, &EBO);
+        glCreateBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size_bytes, indices.data(), GL_STATIC_DRAW);
     }

@@ -1,9 +1,12 @@
-#version 330 core
+#version 460 core
 layout (location = 0) in vec3 aPos;
 
-uniform mat4 _MVP;
+layout(std140, binding = 1) uniform PerFrameData {
+ uniform mat4 MVP;
+ uniform vec3 cameraPos;
+};
 
 void main()
 {
-    gl_Position = _MVP * vec4(aPos, 1.0);
+    gl_Position = MVP * vec4(aPos, 1.0);
 }

@@ -25,6 +25,7 @@ void Application::Init()
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 
+
     OnStart();
 }
 

@@ -14,7 +14,9 @@ Window::Window(int w, int h)
 
 void Window::Initialize()
 {
-	glfwInit();
+    glfwSetErrorCallback([](int error, const char* desc) {std::cerr << "Error: " << desc << std::endl; });
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
 }
 
 bool Window::ShouldClose()
@@ -28,8 +30,8 @@ bool Window::Create(const std::string& name, const int& width, const int& height
     this->height = height;
     this->aspectRatio = (float)width / height;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
@@ -48,23 +50,31 @@ bool Window::Create(const std::string& name, const int& width, const int& height
 
     SetCurrent();
     glfwSetFramebufferSizeCallback(this->instance, FramebufferResizeCallback);
+    glfwSetKeyCallback(this->instance,
+        [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+            {
+                glfwWindowShouldClose(window);
+            }
+        });
     return true;
 }
 
 void Window::SetCurrent()
 {
     glfwMakeContextCurrent(this->instance);
+    glfwSwapInterval(1);
 }
 
 void Window::DestroyResources()
 {
-    glfwTerminate();
+    glfwDestroyWindow(this->instance);
+    glfwTerminate(); 
 }
 
 void Window::ProcessInput()
 {
-    if (glfwGetKey(this->instance, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        this->Close();
+
 }
 
 void Window::SwapBuffers()
