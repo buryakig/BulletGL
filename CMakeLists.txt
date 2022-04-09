@@ -6,6 +6,9 @@ set(PROJECT_NAME BulletGL)
 
 project(${PROJECT_NAME} CXX)
 
+# Options
+option(BUILD_WITH_EASY_PROFILER "Enable EasyProfiler usage" ON)
+
 include(CMake/CMakeMacros.txt)
 
 # Dunno
@@ -35,6 +38,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 set(GLFW_INSTALL OFF CACHE BOOL "")
+# Parameters to build EasyProfiler with
+set(EASY_PROFILER_NO_GUI ON CACHE BOOL "")
+set(EASY_PROFILER_NO_SAMPLES ON CACHE BOOL "")
 
 # Excluding compiler warnings with project define 
 #if(WIN32)
@@ -43,6 +49,7 @@ set(GLFW_INSTALL OFF CACHE BOOL "")
 
 # Adding submodules CmakeLists to this one
 add_subdirectory(submodules/src/glfw)
+add_subdirectory(submodules/src/easy_sources)
 
 include_directories(.)
 include_directories(submodules/src)
@@ -50,7 +57,7 @@ include_directories(submodules/src/imgui)
 include_directories(submodules/src/glfw/include)
 include_directories(submodules/src/glm)
 include_directories(submodules/glad/include)
-include_directories(deps/src/stb)
+include_directories(submodules/src/stb)
 
 # Setting macros for glad linking
 set(GLAD_SOURCES submodules/glad/src/glad.c submodules/glad/include/glad/glad.h)# submodules/glad/src/vulkan.c)
@@ -59,6 +66,14 @@ set(GLAD_SOURCES submodules/glad/src/glad.c submodules/glad/include/glad/glad.h)
 #endif()
 
 add_library(glad ${GLAD_SOURCES})
+
+if(BUILD_WITH_EASY_PROFILER)
+	message("Enabled EasyProfiler")
+	add_definitions(-DBUILD_WITH_EASY_PROFILER=1)
+	include_directories(deps/src/easy_profiler/include)
+	set_property(TARGET easy_profiler PROPERTY FOLDER "ThirdPartyLibraries")
+	set_property(TARGET profiler_converter PROPERTY FOLDER "ThirdPartyLibraries")
+endif()
 
 set_property(TARGET glfw          PROPERTY FOLDER "ThirdPartyLibraries")
 
@@ -98,7 +113,7 @@ if(MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY  "${CMAKE_SOURCE_DIR}")
 endif()
 
-target_link_libraries(${PROJECT_NAME} glfw glad)
+target_link_libraries(${PROJECT_NAME} glfw glad easy_profiler)
 
 add_subdirectory(examples ${CMAKE_CURRENT_BINARY_DIR}/examples)
 

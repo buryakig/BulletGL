@@ -30,5 +30,21 @@
     "url": "https://github.com/ocornut/imgui.git",
     "revision" : "v1.83"
  }
+},
+{
+    "name": "easy_profiler",
+    "source": {
+        "type": "archive",
+        "url": "https://github.com/yse/easy_profiler/releases/download/v2.1.0/easy_profiler-v2.1.0-msvc15-win64.zip",
+        "sha1": "d7b99c2b0e18e4c6f963724c0ff3a852a34b1b07"
+    }
+},
+{
+    "name": "easy_sources",
+    "source": {
+        "type": "archive",
+        "url": "https://github.com/yse/easy_profiler/archive/v2.1.0.zip",
+        "sha1": "4c19019a3ced6b11179d7eabcfd65f463f254e34"
+    }
 }
 ]

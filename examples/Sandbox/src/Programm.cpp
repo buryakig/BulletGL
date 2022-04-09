@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "UI.h"
 
+#include <easy/profiler.h>
+
 
 
 Mesh quad;
@@ -17,6 +19,10 @@ glm::mat4 quadModel;
 
 void Application::OnStart()
 {
+    EASY_MAIN_THREAD;
+    EASY_PROFILER_ENABLE;
+    
+    EASY_BLOCK("Create resources");
     mainCamera = new Camera(this->window);
     mainCamera->SetUp();
 
@@ -39,6 +45,7 @@ void Application::OnStart()
     quad.Prepare();
     
     quadShader = new Shader("res/Shaders/solidColor.vert", "res/Shaders/solidColor.frag");
+    EASY_END_BLOCK;
 }
 
 void Application::OnUpdate()
@@ -46,8 +53,10 @@ void Application::OnUpdate()
     //mainCamera->Update();
         
     //mainCamera->DrawMesh(quad, quadModel, *quadShader);
-    
+
+    EASY_BLOCK("ui->Draw()");
     ui->Draw();
+    EASY_END_BLOCK;
 }
 
 
@@ -68,6 +77,9 @@ int main()
 	App.Init();
 	
 	App.Run();
+
+
+    profiler::dumpBlocksToFile("profiler_dump.prof");
 }
 
 
