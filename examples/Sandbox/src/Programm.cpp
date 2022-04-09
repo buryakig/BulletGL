@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "UI.h"
 
 
 
@@ -9,6 +10,7 @@ Mesh quad;
 Camera* mainCamera;
 
 Shader* quadShader;
+UI* ui;
 
 glm::mat4 quadModel;
 
@@ -17,6 +19,9 @@ void Application::OnStart()
 {
     mainCamera = new Camera(this->window);
     mainCamera->SetUp();
+
+    ui = new UI(this->window);
+    ui->SetUp();
 
     quad.vertices = std::vector<glm::vec3>{
             glm::vec3(0.5f,  0.5f, -5.0f),  // top right
@@ -38,9 +43,11 @@ void Application::OnStart()
 
 void Application::OnUpdate()
 {
-    mainCamera->Update();
+    //mainCamera->Update();
         
-    mainCamera->DrawMesh(quad, quadModel, *quadShader);
+    //mainCamera->DrawMesh(quad, quadModel, *quadShader);
+    
+    ui->Draw();
 }
 
 
@@ -48,6 +55,7 @@ void Application::OnDestroy()
 {
     delete quadShader;
     delete mainCamera;
+    delete ui;
 }
 
 

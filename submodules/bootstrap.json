@@ -14,5 +14,21 @@
         "url": "https://github.com/glfw/glfw.git",
         "revision": "3.3.4"
     }
+},
+{
+ "name": "stb",
+  "source": {
+   "type": "git",
+    "url": "https://github.com/nothings/stb.git",
+    "revision": "c9064e317699d2e495f36ba4f9ac037e88ee371a"
+ }
+},
+{
+ "name": "imgui",
+  "source": {
+   "type": "git",
+    "url": "https://github.com/ocornut/imgui.git",
+    "revision" : "v1.83"
+ }
 }
 ]

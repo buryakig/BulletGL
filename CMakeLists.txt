@@ -3,6 +3,7 @@ set(CMAKE_SUPPRESS_REGENERATION true)
 
 set(FOLDER_NAME BulletGL)
 set(PROJECT_NAME BulletGL)
+
 project(${PROJECT_NAME} CXX)
 
 include(CMake/CMakeMacros.txt)
@@ -45,9 +46,11 @@ add_subdirectory(submodules/src/glfw)
 
 include_directories(.)
 include_directories(submodules/src)
+include_directories(submodules/src/imgui)
 include_directories(submodules/src/glfw/include)
 include_directories(submodules/src/glm)
 include_directories(submodules/glad/include)
+include_directories(deps/src/stb)
 
 # Setting macros for glad linking
 set(GLAD_SOURCES submodules/glad/src/glad.c submodules/glad/include/glad/glad.h)# submodules/glad/src/vulkan.c)

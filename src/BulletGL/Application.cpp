@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "UI.h"
 
 GLFWwindow* window;
 
@@ -25,7 +26,6 @@ void Application::Init()
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 
-
     OnStart();
 }
 
@@ -38,8 +38,12 @@ int Application::Run()
     // -----------
     while (!window->ShouldClose())
     {
+        window->RecalculateSize();
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glViewport(0, 0, window->width, window->height);
         glClear(GL_COLOR_BUFFER_BIT);
+
 
         OnUpdate();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
