@@ -6,9 +6,7 @@
 class UI
 {
 public:
-	UI(Window* wnd) : window(wnd), 
-		VBO(0), EBO(0), VAO(0), 
-		perFrameDataBuffer(0) { };
+	UI(Window* wnd) : window(wnd) { };
 
 	~UI();
 
@@ -17,13 +15,7 @@ public:
 
 private:
 
-	Shader* uiShader;
 	Window* window;
 
-	unsigned int VBO, EBO, VAO;
-	unsigned int perFrameDataBuffer;
-
-
-	static const GLchar const* shaderPathVertex;
-	static const GLchar const* shaderPathFragment;
+	const char* glsl_version = "#version 460";
 };

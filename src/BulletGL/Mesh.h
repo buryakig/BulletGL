@@ -14,8 +14,9 @@ public:
 	void SetVertices();
 	void SetIndices();
 
-	//std::vector<Vector3> normals;
 	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normal;
+	std::vector<glm::vec2> uv;
 	//std::vector<Vector2> uv;
 	std::vector<unsigned int> indices;
 

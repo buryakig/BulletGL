@@ -1,6 +1,6 @@
 #pragma once
 #include "Transform.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Window.h"
 #include "Shader.h"
 
@@ -46,7 +46,7 @@ public:
 
 	void ProcessMovement();
 
-	void DrawMesh(Mesh& mesh, glm::mat4 matrix, const Shader& material);
+	void DrawModel(Model& model, glm::mat4 matrix, const Shader& material);
 
 private:
 	unsigned int cameraUniformBuffer;

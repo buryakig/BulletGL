@@ -8,6 +8,7 @@ project(${PROJECT_NAME} CXX)
 
 # Options
 option(BUILD_WITH_EASY_PROFILER "Enable EasyProfiler usage" ON)
+option(BUILD_WITH_OPTICK "Enable Optick usage" OFF)
 
 include(CMake/CMakeMacros.txt)
 
@@ -22,7 +23,7 @@ else()
 endif()
 
 # Exetuting bootstrap
-if((NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/deps/.bootstrap.json") OR ("${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/deps/.bootstrap.json"))
+if((NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/.bootstrap.json") OR ("${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/submodules/.bootstrap.json"))
 	execute_process(
 		COMMAND ${PYTHON_EXECUTABLE} "bootstrap.py"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -41,6 +42,17 @@ set(GLFW_INSTALL OFF CACHE BOOL "")
 # Parameters to build EasyProfiler with
 set(EASY_PROFILER_NO_GUI ON CACHE BOOL "")
 set(EASY_PROFILER_NO_SAMPLES ON CACHE BOOL "")
+# Parameters to build Assimp with
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "")
+set(BUILD_SHARED_LIBS  OFF CACHE BOOL "")
+set(ASSIMP_BUILD_DRACO OFF CACHE BOOL "")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "")
+set(BUILD_DOCS    OFF CACHE BOOL "")
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "")
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "")
+set(ASSIMP_BUILD_GLTF_IMPORTER ON CACHE BOOL "")
 
 # Excluding compiler warnings with project define 
 #if(WIN32)
@@ -50,6 +62,10 @@ set(EASY_PROFILER_NO_SAMPLES ON CACHE BOOL "")
 # Adding submodules CmakeLists to this one
 add_subdirectory(submodules/src/glfw)
 add_subdirectory(submodules/src/easy_sources)
+add_subdirectory(submodules/src/assimp)
+if(BUILD_WITH_OPTICK)
+add_subdirectory(submodules/src/optick)
+endif()
 
 include_directories(.)
 include_directories(submodules/src)
@@ -58,6 +74,9 @@ include_directories(submodules/src/glfw/include)
 include_directories(submodules/src/glm)
 include_directories(submodules/glad/include)
 include_directories(submodules/src/stb)
+include_directories(submodules/src/optick/src)
+include_directories(submodules/src/assimp/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/submodules/src/assimp/include)
 
 # Setting macros for glad linking
 set(GLAD_SOURCES submodules/glad/src/glad.c submodules/glad/include/glad/glad.h)# submodules/glad/src/vulkan.c)
@@ -70,12 +89,25 @@ add_library(glad ${GLAD_SOURCES})
 if(BUILD_WITH_EASY_PROFILER)
 	message("Enabled EasyProfiler")
 	add_definitions(-DBUILD_WITH_EASY_PROFILER=1)
-	include_directories(deps/src/easy_profiler/include)
+	include_directories(submodules/src/easy_profiler/include)
 	set_property(TARGET easy_profiler PROPERTY FOLDER "ThirdPartyLibraries")
 	set_property(TARGET profiler_converter PROPERTY FOLDER "ThirdPartyLibraries")
 endif()
-
+if(BUILD_WITH_OPTICK)
+	message("Enabled Optick")
+	add_definitions(-DBUILD_WITH_OPTICK=1)
+	set_property(TARGET OptickCore PROPERTY FOLDER "ThirdPartyLibraries")
+endif()
+if(WIN32)
+set_property(TARGET zlib          PROPERTY FOLDER "ThirdPartyLibraries")
+set_property(TARGET zlibstatic    PROPERTY FOLDER "ThirdPartyLibraries")
+set_property(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTY FOLDER "ThirdPartyLibraries")
+endif()
+set_property(TARGET uninstall     PROPERTY FOLDER "ThirdPartyLibraries")
 set_property(TARGET glfw          PROPERTY FOLDER "ThirdPartyLibraries")
+set_property(TARGET assimp        PROPERTY FOLDER "ThirdPartyLibraries")
+set_property(TARGET glad          PROPERTY FOLDER "ThirdPartyLibraries")
+set_property(TARGET IrrXML        PROPERTY FOLDER "ThirdPartyLibraries")
 
 
 
@@ -113,7 +145,10 @@ if(MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY  "${CMAKE_SOURCE_DIR}")
 endif()
 
-target_link_libraries(${PROJECT_NAME} glfw glad easy_profiler)
+target_link_libraries(${PROJECT_NAME} glfw glad easy_profiler assimp)
+if(BUILD_WITH_OPTICK)
+target_link_libraries(${PROJECT_NAME} OptickCore)
+endif()
 
 add_subdirectory(examples ${CMAKE_CURRENT_BINARY_DIR}/examples)
 

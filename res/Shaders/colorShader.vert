@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
@@ -10,16 +10,16 @@ out vec3 FragPos;
 out vec3 Color;
 
 
-layout (std140) uniform cameraMatrices
-{
-	mat4 projection;
-	mat4 view;
+layout(std140, binding = 0) uniform PerFrameData {
+ uniform mat4 MVP;
+ uniform vec3 cameraPos;
 };
+
 uniform mat4 model;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = MVP * model * vec4(aPos, 1.0);
     FragPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
     TexCoord = aTexCoord;

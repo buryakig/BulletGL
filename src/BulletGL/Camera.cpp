@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Model.h"
 
 float lastX = 1600.0f / 2.0;
 float lastY = 980.0 / 2.0;
@@ -21,16 +22,20 @@ void Camera::Update()
     viewProjectionMatrix = glm::perspective(glm::radians(fov), 1600.0f / 980.0f, 0.1f, 100.0f);
 
     UpdateCameraDataBuffer();
+
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glViewport(0, 0, window->width, window->height);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Camera::CreateCameraDataBuffer()
 {
-    int fd;;
     int camBufferSize = sizeof(PerFrameCameraData);
 
     glCreateBuffers(1, &cameraUniformBuffer);
     glNamedBufferStorage(cameraUniformBuffer, camBufferSize, nullptr, GL_DYNAMIC_STORAGE_BIT);
-    glBindBufferRange(GL_UNIFORM_BUFFER, 1, cameraUniformBuffer, 0, camBufferSize);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUniformBuffer);
 }
 
 void Camera::UpdateCameraDataBuffer()
@@ -104,9 +109,9 @@ void Camera::ProcessMovement()
         transform->position += glm::normalize(glm::cross(transform->forward, transform->up)) * 0.1f;
 }
 
-void Camera::DrawMesh(Mesh& mesh, glm::mat4 matrix, const Shader& material)
+void Camera::DrawModel(Model& model, glm::mat4 matrix, const Shader& material)
 {
-    material.use();
-    mesh.Draw();
+    material.setMatrix("model", matrix);
+    model.Draw(material);
 }
 

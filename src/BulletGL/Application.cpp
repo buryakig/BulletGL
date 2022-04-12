@@ -1,6 +1,9 @@
 #include "Application.h"
 #include "UI.h"
 
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 GLFWwindow* window;
 
 Application::Application()
@@ -39,10 +42,10 @@ int Application::Run()
     while (!window->ShouldClose())
     {
         window->RecalculateSize();
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glViewport(0, 0, window->width, window->height);
-        glClear(GL_COLOR_BUFFER_BIT);
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
 
         OnUpdate();
