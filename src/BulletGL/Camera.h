@@ -1,4 +1,5 @@
 #pragma once
+#include "CommandBuffer.h"
 #include "Transform.h"
 #include "Model.h"
 #include "Window.h"
@@ -46,6 +47,9 @@ public:
 
 	void ProcessMovement();
 
+	void AddCommandBuffer(CommandBuffer* cb);
+	void ExecuteCommandBuffers();
+
 	void DrawModel(Model& model, glm::mat4 matrix, const Shader& material);
 
 private:
@@ -53,4 +57,5 @@ private:
 
 	PerFrameCameraData cameraData;
 
+	std::vector<CommandBuffer*> cmdBuffers;
 };

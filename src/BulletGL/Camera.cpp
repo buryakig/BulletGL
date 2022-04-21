@@ -109,6 +109,19 @@ void Camera::ProcessMovement()
         transform->position += glm::normalize(glm::cross(transform->forward, transform->up)) * 0.1f;
 }
 
+void Camera::AddCommandBuffer(CommandBuffer* cb)
+{
+    cmdBuffers.push_back(cb);
+}
+
+void Camera::ExecuteCommandBuffers()
+{
+    for (CommandBuffer* cmdbuff : cmdBuffers)
+    {
+        cmdbuff->Execute();
+    }
+}
+
 void Camera::DrawModel(Model& model, glm::mat4 matrix, const Shader& material)
 {
     material.setMatrix("model", matrix);
