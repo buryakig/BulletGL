@@ -10,10 +10,7 @@ CommandBuffer::~CommandBuffer()
 
 void CommandBuffer::DrawMesh(Model& mesh, glm::mat4& matrix, Shader& material)
 {
-	DrawMeshCommand* cmd = new DrawMeshCommand(mesh, matrix, material);
-	//Command* cmd = new Command();
-
-	commands.push_back(cmd);
+	commands.push_back(new DrawMeshCommand(mesh, matrix, material));
 }
 
 void CommandBuffer::Execute()
