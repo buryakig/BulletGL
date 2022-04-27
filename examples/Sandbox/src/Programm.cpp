@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "UI.h"
+#include "Managers/SceneManager.h"
 
 #include <easy/profiler.h>
 
@@ -18,12 +19,17 @@ Shader* shadowmapShader;
 UI* ui;
 
 CommandBuffer* mainCmdBuffer;
+SceneManager* sceneManager;
 
 glm::mat4 cubeModel;
 
 
 void Application::OnStart()
 {
+
+    sceneManager = new SceneManager();
+    sceneManager->LoadScene("res/Scenes/Scene.yaml");
+
     mainCmdBuffer = new CommandBuffer();
 
     mainCamera = new Camera(this->window);
@@ -67,6 +73,7 @@ void Application::OnDestroy()
     delete mainCmdBuffer;
     delete ui;
     delete cube;
+    delete sceneManager;
 }
 
 

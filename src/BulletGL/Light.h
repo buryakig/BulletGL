@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Transform.h"
 #include "Model.h"
 #include "Shader.h"

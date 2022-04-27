@@ -53,6 +53,11 @@ set(BUILD_DOCS    OFF CACHE BOOL "")
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "")
 set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "")
 set(ASSIMP_BUILD_GLTF_IMPORTER ON CACHE BOOL "")
+# Parameters to build YAML with
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
+set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "")
+
+
 
 # Excluding compiler warnings with project define 
 #if(WIN32)
@@ -63,6 +68,7 @@ set(ASSIMP_BUILD_GLTF_IMPORTER ON CACHE BOOL "")
 add_subdirectory(submodules/src/glfw)
 add_subdirectory(submodules/src/easy_sources)
 add_subdirectory(submodules/src/assimp)
+add_subdirectory(submodules/src/yaml)
 if(BUILD_WITH_OPTICK)
 add_subdirectory(submodules/src/optick)
 endif()
@@ -76,6 +82,7 @@ include_directories(submodules/glad/include)
 include_directories(submodules/src/stb)
 include_directories(submodules/src/optick/src)
 include_directories(submodules/src/assimp/include)
+include_directories(submodules/src/yaml/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/submodules/src/assimp/include)
 
 # Setting macros for glad linking
@@ -108,10 +115,7 @@ set_property(TARGET glfw          PROPERTY FOLDER "ThirdPartyLibraries")
 set_property(TARGET assimp        PROPERTY FOLDER "ThirdPartyLibraries")
 set_property(TARGET glad          PROPERTY FOLDER "ThirdPartyLibraries")
 set_property(TARGET IrrXML        PROPERTY FOLDER "ThirdPartyLibraries")
-
-
-
-
+set_property(TARGET yaml-cpp          PROPERTY FOLDER "ThirdPartyLibraries")
 
 
 
@@ -145,7 +149,7 @@ if(MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY  "${CMAKE_SOURCE_DIR}")
 endif()
 
-target_link_libraries(${PROJECT_NAME} glfw glad easy_profiler assimp)
+target_link_libraries(${PROJECT_NAME} glfw glad easy_profiler assimp yaml-cpp)
 if(BUILD_WITH_OPTICK)
 target_link_libraries(${PROJECT_NAME} OptickCore)
 endif()

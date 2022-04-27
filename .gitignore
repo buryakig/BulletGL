@@ -18,3 +18,5 @@ submodules/src/
 submodules/archives/
 
 imgui.ini
+
+msvc_build.bat
