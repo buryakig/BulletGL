@@ -50,8 +50,6 @@ public:
 	void AddCommandBuffer(CommandBuffer* cb);
 	void ExecuteCommandBuffers();
 
-	void DrawModel(Model& model, glm::mat4 matrix, const Shader& material);
-
 private:
 	unsigned int cameraUniformBuffer;
 

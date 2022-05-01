@@ -38,6 +38,6 @@ float CalculateShadows(vec4 fragPosLightSpace)
 void main()
 {
 	//float shadow = CalculateShadows(FragPosLightSpace);
-	FragColor = vec4(1.0, 0.0, 0.0, 1.0);//fColor;// * shadow;
+	FragColor = fColor;// * shadow;
 
 }

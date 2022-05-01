@@ -9,7 +9,7 @@
 #include <assimp/postprocess.h>
 
 #include "Mesh.h"
-#include "Shader.h"
+#include "Material.h"
 #include "Texture.h"
 
 #include <string>
@@ -42,9 +42,9 @@ public:
     }
 
     // draws the model, and thus all its meshes
-    void Draw(const Shader& shader)
+    void Draw(Material& mat)
     {
-        shader.use();
+        mat.Use();
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i]->Draw();
     }

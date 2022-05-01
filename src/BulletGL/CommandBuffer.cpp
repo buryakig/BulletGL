@@ -8,7 +8,7 @@ CommandBuffer::~CommandBuffer()
 	}
 }
 
-void CommandBuffer::DrawMesh(Model& mesh, glm::mat4& matrix, Shader& material)
+void CommandBuffer::DrawMesh(Model& mesh, glm::mat4& matrix, Material& material)
 {
 	commands.push_back(new DrawMeshCommand(mesh, matrix, material));
 }

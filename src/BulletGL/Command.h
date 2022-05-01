@@ -1,6 +1,6 @@
 #include "Core.h"
 #include "Model.h"
-#include "Shader.h"
+#include "Material.h"
 
 class Command
 {
@@ -11,15 +11,15 @@ public:
 class DrawMeshCommand : public Command
 {
 public:	
-	DrawMeshCommand(Model& vmesh, glm::mat4& vmatrix, Shader& vmaterial) :
-		mesh(vmesh), matrix(vmatrix), material(vmaterial)
+	DrawMeshCommand(Model& vmesh, const glm::mat4& vmatrix, Material& vmaterial) :
+		model(vmesh), matrix(vmatrix), material(vmaterial)
 	{}
 
 	~DrawMeshCommand() {}
 
-	Model mesh;
-	glm::mat4 matrix;
-	Shader material;
+	Model& model;
+	const glm::mat4& matrix;
+	Material& material;
 
 	void Execute() override;
 };

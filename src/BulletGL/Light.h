@@ -44,7 +44,6 @@ public:
 	void Update();
 	void UpdateLightData();
 	void CreateCameraDataBuffer();
-	void DrawModel(Model& model, glm::mat4 matrix, const Shader& material);
 
 private:
 };

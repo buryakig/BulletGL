@@ -53,9 +53,3 @@ void Light::Update()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	UpdateLightData();
 }
-
-void Light::DrawModel(Model& model, glm::mat4 matrix, const Shader& material)
-{
-	material.setMatrix("model", matrix);
-	model.Draw(material);
-}

@@ -1,6 +1,8 @@
 
 #include "Application.h"
 #include "Model.h"
+#include "Shader.h"
+#include "Material.h"
 #include "Camera.h"
 #include "Light.h"
 #include "UI.h"
@@ -16,6 +18,8 @@ Light* mainLight;
 
 Shader* quadShader;
 Shader* shadowmapShader;
+Material* quadMaterial;
+
 UI* ui;
 
 CommandBuffer* mainCmdBuffer;
@@ -48,7 +52,10 @@ void Application::OnStart()
     quadShader = new Shader("res/Shaders/solidColor.vert", "res/Shaders/tunableColor.frag");
     shadowmapShader = new Shader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
 
-    mainCmdBuffer->DrawMesh(*cube, cubeModel, *quadShader);
+    quadMaterial = new Material(quadShader);
+    quadMaterial->SetColor("fColor", glm::vec4(1.0, 0.0, 0.0, 1.0));
+
+    mainCmdBuffer->DrawMesh(*cube, cubeModel, *quadMaterial);
 
     mainCamera->AddCommandBuffer(mainCmdBuffer);
 }

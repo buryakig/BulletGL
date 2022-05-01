@@ -1,6 +1,6 @@
 #include "Core.h"
 #include "Model.h"
-#include "Shader.h"
+#include "Material.h"
 #include "Command.h"
 
 
@@ -14,7 +14,7 @@ public:
 
 	~CommandBuffer();
 
-	void DrawMesh(Model& mesh, glm::mat4& matrix, Shader& material);
+	void DrawMesh(Model& mesh, glm::mat4& matrix, Material& material);
 	void Execute();
 
 	std::string name;

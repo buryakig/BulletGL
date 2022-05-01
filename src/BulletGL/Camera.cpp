@@ -122,9 +122,3 @@ void Camera::ExecuteCommandBuffers()
     }
 }
 
-void Camera::DrawModel(Model& model, glm::mat4 matrix, const Shader& material)
-{
-    material.setMatrix("model", matrix);
-    model.Draw(material);
-}
-
