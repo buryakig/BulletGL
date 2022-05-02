@@ -18,7 +18,10 @@ Light* mainLight;
 
 Shader* quadShader;
 Shader* shadowmapShader;
+Shader* colorShader;
+
 Material* quadMaterial;
+Material* litMaterial;
 
 UI* ui;
 
@@ -50,12 +53,15 @@ void Application::OnStart()
     cubeModel = glm::mat4(1.0f);
     
     quadShader = new Shader("res/Shaders/solidColor.vert", "res/Shaders/tunableColor.frag");
+    colorShader = new Shader("res/Shaders/colorShader.vert", "res/Shaders/colorShader.frag");
     shadowmapShader = new Shader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
 
     quadMaterial = new Material(quadShader);
     quadMaterial->SetColor("fColor", glm::vec4(1.0, 0.0, 0.0, 1.0));
 
-    mainCmdBuffer->DrawMesh(*cube, cubeModel, *quadMaterial);
+    litMaterial = new Material(colorShader);
+
+    mainCmdBuffer->DrawMesh(*cube, cubeModel, *litMaterial);
 
     mainCamera->AddCommandBuffer(mainCmdBuffer);
 }
@@ -75,6 +81,9 @@ void Application::OnDestroy()
 {
     delete quadShader;
     delete shadowmapShader;
+    delete colorShader;
+    delete quadMaterial;
+    delete litMaterial;
     delete mainLight;
     delete mainCamera;
     delete mainCmdBuffer;

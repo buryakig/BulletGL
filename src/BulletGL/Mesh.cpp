@@ -26,7 +26,6 @@ Mesh::~Mesh()
 
 void Mesh::Prepare()
 {
-
     if (vertices.empty())
     {
         std::cout << "NO VERTICES DETECTED WHILE PREPARING MESH" << std::endl;
@@ -36,23 +35,24 @@ void Mesh::Prepare()
     const int verticies_size_bytes = vertices.size() * sizeof(vertices[0]);
 
     glCreateVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
     glCreateBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, verticies_size_bytes, vertices.data(), GL_STATIC_DRAW);
+    glBindVertexBuffer(0, VBO, 0, sizeof(vertices[0]));
+    glNamedBufferData(VBO, verticies_size_bytes, vertices.data(), GL_STATIC_DRAW);
 
     if (!indices.empty())
     {
         const int indices_size_bytes = indices.size() * sizeof(indices[0]);
         glCreateBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size_bytes, indices.data(), GL_STATIC_DRAW);
+        glNamedBufferData(EBO, indices_size_bytes, indices.data(), GL_STATIC_DRAW);
+        glVertexArrayElementBuffer(VAO, EBO);
     }
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*)0);
-    glEnableVertexAttribArray(0);
+    glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(vertices[0]));
+    glEnableVertexArrayAttrib(VAO, 0);
+    glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(VAO, 0, 0);
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
