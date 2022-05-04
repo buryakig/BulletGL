@@ -13,18 +13,15 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
 	~Shader() {
-		remove(shaderList.begin(), shaderList.end(), this);
 		glDeleteProgram(programID); 
-	
 	}
 	// use/activate the shader
 	void use() const;
 
 private:
-	static std::vector<Shader*> shaderList;
-	static int blockBindings;
+	Shader(unsigned int id) : programID(id) {}
 
-	static unsigned int uboMatrices;
+	friend class Resources;
 };
 
 #endif

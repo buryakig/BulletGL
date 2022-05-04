@@ -33,29 +33,49 @@ void Mesh::Prepare()
     }
 
     const int verticies_size_bytes = vertices.size() * sizeof(vertices[0]);
+    const int uv_size_bytes = uv.size() * sizeof(uv[0]);
+    const int normals_size_bytes = normal.size() * sizeof(normal[0]);
+
+    const int total_size = verticies_size_bytes + uv_size_bytes + normals_size_bytes;
 
     glCreateVertexArrays(1, &VAO);
     glCreateBuffers(1, &VBO);
-    glBindVertexBuffer(0, VBO, 0, sizeof(vertices[0]));
-    glNamedBufferData(VBO, verticies_size_bytes, vertices.data(), GL_STATIC_DRAW);
+    glNamedBufferStorage(VBO, total_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+    int offset = 0;
+    glNamedBufferSubData(VBO, 0, verticies_size_bytes, vertices.data());
+    offset += verticies_size_bytes;
+    glNamedBufferSubData(VBO, offset, uv_size_bytes, uv.data());
+    offset += uv_size_bytes;
+    glNamedBufferSubData(VBO, offset, normals_size_bytes, normal.data());
 
     if (!indices.empty())
     {
         const int indices_size_bytes = indices.size() * sizeof(indices[0]);
         glCreateBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glNamedBufferData(EBO, indices_size_bytes, indices.data(), GL_STATIC_DRAW);
+
+        glNamedBufferStorage(EBO, indices_size_bytes, nullptr, GL_DYNAMIC_STORAGE_BIT);
+        glNamedBufferSubData(EBO, 0, indices_size_bytes, indices.data());
+
         glVertexArrayElementBuffer(VAO, EBO);
     }
 
-    glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(vertices[0]));
+    offset = 0;
+    glVertexArrayVertexBuffer(VAO, 0, VBO, offset, sizeof(vertices[0]));
+    offset += verticies_size_bytes;
+    glVertexArrayVertexBuffer(VAO, 1, VBO, offset, sizeof(uv[0]));
+    offset += uv_size_bytes;
+    glVertexArrayVertexBuffer(VAO, 2, VBO, offset, sizeof(normal[0]));
+
     glEnableVertexArrayAttrib(VAO, 0);
+    glEnableVertexArrayAttrib(VAO, 1);
+    glEnableVertexArrayAttrib(VAO, 2);
     glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribFormat(VAO, 1, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribFormat(VAO, 3, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(VAO, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
+    glVertexArrayAttribBinding(VAO, 1, 1);
+    glVertexArrayAttribBinding(VAO, 2, 2);
 }
 
 

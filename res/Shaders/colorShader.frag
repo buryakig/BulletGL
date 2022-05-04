@@ -98,7 +98,7 @@ void main()
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
-    FragColor = vec4(normal, 1.0);// + vec4(material.matDiffuseColor, 0.0);
+    FragColor = vec4(TexCoord, 0.0, 1.0);// + vec4(material.matDiffuseColor, 0.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)

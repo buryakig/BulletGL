@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "UI.h"
+#include "Utils/Resources/Resources.h"
 #include "Managers/SceneManager.h"
 
 #include <easy/profiler.h>
@@ -48,13 +49,13 @@ void Application::OnStart()
     ui = new UI(this->window);
     ui->SetUp();
 
-    cube = new Model("res/Models/Cube/cube.obj");
+    cube = Resources::LoadModel("res/Models/Cube/cube.obj");
 
     cubeModel = glm::mat4(1.0f);
     
-    quadShader = new Shader("res/Shaders/solidColor.vert", "res/Shaders/tunableColor.frag");
-    colorShader = new Shader("res/Shaders/colorShader.vert", "res/Shaders/colorShader.frag");
-    shadowmapShader = new Shader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
+    quadShader = Resources::LoadShader("res/Shaders/solidColor.vert", "res/Shaders/tunableColor.frag");
+    colorShader = Resources::LoadShader("res/Shaders/colorShader.vert", "res/Shaders/colorShader.frag");
+    shadowmapShader = Resources::LoadShader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
 
     quadMaterial = new Material(quadShader);
     quadMaterial->SetColor("fColor", glm::vec4(1.0, 0.0, 0.0, 1.0));
@@ -79,17 +80,15 @@ void Application::OnUpdate()
 
 void Application::OnDestroy()
 {
-    delete quadShader;
-    delete shadowmapShader;
-    delete colorShader;
     delete quadMaterial;
     delete litMaterial;
     delete mainLight;
     delete mainCamera;
     delete mainCmdBuffer;
     delete ui;
-    delete cube;
     delete sceneManager;
+
+    Resources::DeallocateMemory();
 }
 
 

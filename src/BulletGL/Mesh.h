@@ -24,6 +24,5 @@ private:
 	void Release();
 
 	unsigned int VBO, EBO, VAO;
-
 };
 
