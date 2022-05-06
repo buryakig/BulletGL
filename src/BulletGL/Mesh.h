@@ -15,14 +15,16 @@ public:
 	void SetIndices();
 
 	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normal;
+	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> uv;
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
 	//std::vector<Vector2> uv;
 	std::vector<unsigned int> indices;
 
 private:
 	void Release();
 
-	unsigned int VBO, EBO, VAO;
+	unsigned int VBO, EBO, VAO = 0;
 };
 

@@ -36,7 +36,7 @@ void Application::OnStart()
 {
 
     sceneManager = new SceneManager();
-    sceneManager->LoadScene("res/Scenes/Scene.yaml");
+    //sceneManager->LoadScene("res/Scenes/Scene.yaml");
 
     mainCmdBuffer = new CommandBuffer();
 
@@ -49,7 +49,7 @@ void Application::OnStart()
     ui = new UI(this->window);
     ui->SetUp();
 
-    cube = Resources::LoadModel("res/Models/Cube/cube.obj");
+    cube = Resources::LoadModel("res/Models/Bunny/bunny.obj");
 
     cubeModel = glm::mat4(1.0f);
     

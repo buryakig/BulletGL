@@ -9,7 +9,9 @@ public:
 
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     static Model* loadModel(string const& path)
-    {
+    {   
+
+        std::cout << "Processing model file " << std::endl;
         // read file via ASSIMP
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -21,6 +23,7 @@ public:
         }
 
         Model* model = new Model();
+        std::cout << "Done model file " << std::endl;
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene, model);
         
@@ -46,60 +49,76 @@ public:
 
     }
 
-    static Mesh* processMesh(aiMesh* mesh, const aiScene* scene)
+    static Mesh* processMesh(aiMesh* aMesh, const aiScene* scene)
     {
-        vector<glm::vec3> vertices;
-        vector<glm::vec3> normal;
-        vector<glm::vec2> uv;
-        vector<unsigned int> indices;
+        std::cout << "Loading Mesh" << std::endl;
+        std::vector<glm::vec3> vertices;
+        std::vector<glm::vec2> uv;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec3> tangents;
+        std::vector<glm::vec3> bitangents;
+        std::vector<unsigned int> indices;
 
-        vector<Texture> textures;
+        bool hasPositions = aMesh->HasPositions();
+        bool hasNormals = aMesh->HasNormals();
+        bool hasTextureCoords0 = aMesh->HasTextureCoords(0);
+        bool hasTangentsAndBitangents = aMesh->HasTangentsAndBitangents();
+        bool hasIndices = aMesh->HasFaces();
+        
+        if (hasPositions) vertices.reserve(aMesh->mNumVertices);
+        if (hasNormals) normals.reserve(aMesh->mNumVertices);
+        if (hasTextureCoords0) uv.reserve(aMesh->mNumVertices);
+        if (hasTangentsAndBitangents)
+        {
+            tangents.reserve(aMesh->mNumVertices);
+            bitangents.reserve(aMesh->mNumVertices);
+        }
+
+        if(hasIndices) indices.reserve(static_cast<int>(aMesh->mNumFaces) * 3);
 
         // walk through each of the mesh's vertices
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+        for (unsigned int i = 0; i < aMesh->mNumVertices; ++i)
         {
-            glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
-           // positions
-            vector.x = mesh->mVertices[i].x;
-            vector.y = mesh->mVertices[i].y;
-            vector.z = mesh->mVertices[i].z;
-            vertices.push_back(vector);
-            // normals
-            if (mesh->HasNormals())
+            // positions
+            if (hasPositions)
             {
-                vector.x = mesh->mNormals[i].x;
-                vector.y = mesh->mNormals[i].y;
-                vector.z = mesh->mNormals[i].z;
-                normal.push_back(vector);
+                vertices.push_back(glm::vec3(aMesh->mVertices[i].x, aMesh->mVertices[i].y, aMesh->mVertices[i].z));
+            }
+            // normals
+            if (hasNormals)
+            {
+                normals.push_back(glm::vec3(aMesh->mNormals[i].x, aMesh->mNormals[i].y, aMesh->mNormals[i].z));
             }
             // texture coordinates
-            if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+            if (hasTextureCoords0) // does the mesh contain texture coordinates?
             {
-                glm::vec2 vec;
-                // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-                // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-                vec.x = mesh->mTextureCoords[0][i].x;
-                vec.y = mesh->mTextureCoords[0][i].y;
-                uv.push_back(vec);
+                uv.push_back(glm::vec2(aMesh->mTextureCoords[0][i].x, aMesh->mTextureCoords[0][i].y));
             }
-            else
-                uv.push_back(glm::vec2(0.0f, 0.0f));
+            if (hasTangentsAndBitangents)
+            {
+                tangents.push_back(glm::vec3(aMesh->mTangents[i].x, aMesh->mTangents[i].y, aMesh->mTangents[i].z));
+                bitangents.push_back(glm::vec3(aMesh->mBitangents[i].x, aMesh->mBitangents[i].y, aMesh->mBitangents[i].z));
+            }
         }
         // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
-        for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+        for (unsigned int i = 0; i < aMesh->mNumFaces; ++i)
         {
-            aiFace face = mesh->mFaces[i];
+            aiFace face = aMesh->mFaces[i];
             // retrieve all indices of the face and store them in the indices vector
-            for (unsigned int j = 0; j < face.mNumIndices; j++)
-                indices.push_back(face.mIndices[j]);
+            for (unsigned int j = 0; j < face.mNumIndices; ++j)
+                indices.push_back(aMesh->mFaces[i].mIndices[j]);
         }
         // process materials
 
         Mesh* modelmesh = new Mesh();
         modelmesh->vertices = vertices;
-        modelmesh->normal = normal;
+        modelmesh->normals = normals;
+        modelmesh->tangents = tangents;
+        modelmesh->bitangents = bitangents;
         modelmesh->uv = uv;
         modelmesh->indices = indices;
+
+        std::cout << "Done Loading Mesh" << std::endl;
         modelmesh->Prepare();
         // return a mesh object created from the extracted mesh data
         return modelmesh;

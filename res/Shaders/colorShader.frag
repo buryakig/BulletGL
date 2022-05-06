@@ -59,6 +59,8 @@ struct SpotLight
 out vec4 FragColor;
  
 in vec3 Normal;
+in vec3 Tangent;
+in vec3 BiTangent;
 in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Color;
@@ -90,6 +92,8 @@ void main()
     // properties
     vec3 viewDir = normalize(viewPos.xyz - FragPos);
     vec3 normal = normalize(Normal);
+    vec3 tangent = normalize(Tangent);
+    vec3 bitangent = normalize(BiTangent);
     vec4 diffuse = vec4(texture(material.texture_diffuse1, TexCoord));
     vec3 specular = vec3(texture(material.texture_specular1, TexCoord));
 
@@ -98,7 +102,7 @@ void main()
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
-    FragColor = vec4(TexCoord, 0.0, 1.0);// + vec4(material.matDiffuseColor, 0.0);
+    FragColor = vec4(tangent, 1.0);// + vec4(material.matDiffuseColor, 0.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)
