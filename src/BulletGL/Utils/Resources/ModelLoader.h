@@ -10,48 +10,67 @@ public:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     static Model* loadModel(string const& path)
     {   
-
-        std::cout << "Processing model file " << std::endl;
+        std::string directory = path.substr(0, path.find_last_of("/"));
         // read file via ASSIMP
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* aScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
         // check for errors
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+        if (!aScene || aScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aScene->mRootNode) // if is Not Zero
         {
             cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
             return nullptr;
         }
 
         Model* model = new Model();
-        std::cout << "Done model file " << std::endl;
         // process ASSIMP's root node recursively
-        processNode(scene->mRootNode, scene, model);
+        processNode(aScene->mRootNode, aScene, model, directory);
         
         return model;
     }
 
     // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-    static void processNode(aiNode* node, const aiScene* scene, Model* model)
+    static void processNode(aiNode* node, const aiScene* aScene, Model* model, const std::string& directory)
     {
         // process each mesh located at the current node
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             // the node object only contains indices to index the actual objects in the scene. 
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            model->meshes.push_back(processMesh(mesh, scene));
+            aiMesh* assimpMesh = aScene->mMeshes[node->mMeshes[i]];
+            aiMaterial* assimpMat = aScene->mMaterials[assimpMesh->mMaterialIndex];
+            Material* material = parseMaterial(assimpMesh, assimpMat, aScene, directory);
+
+            model->meshes[processMesh(assimpMesh, aScene)] = material;
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            processNode(node->mChildren[i], scene, model);
+            processNode(node->mChildren[i], aScene, model, directory);
         }
 
     }
 
+    static Material* parseMaterial(aiMesh* assimpMesh, aiMaterial* aMaterial, const aiScene* aScene, std::string directory)
+    {
+        Material* material = new Material(Resources::shaders[0]);
+
+        if (aMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            aiString file;
+            aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
+            std::string texturePath = directory + "/" + file.C_Str();
+            Texture* texture = Resources::LoadTexture(texturePath.c_str(), GL_NEAREST);
+            if (texture)
+            {
+                material->SetTexture("diff", texture);
+            }
+        }
+
+        return material;
+    }
+
     static Mesh* processMesh(aiMesh* aMesh, const aiScene* scene)
     {
-        std::cout << "Loading Mesh" << std::endl;
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec2> uv;
         std::vector<glm::vec3> normals;
@@ -118,7 +137,6 @@ public:
         modelmesh->uv = uv;
         modelmesh->indices = indices;
 
-        std::cout << "Done Loading Mesh" << std::endl;
         modelmesh->Prepare();
         // return a mesh object created from the extracted mesh data
         return modelmesh;

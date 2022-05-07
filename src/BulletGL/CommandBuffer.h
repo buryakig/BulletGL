@@ -14,7 +14,8 @@ public:
 
 	~CommandBuffer();
 
-	void DrawMesh(Model& mesh, glm::mat4& matrix, Material& material);
+	void DrawModel(Model& model, glm::mat4& matrix, Material* material);
+	void DrawModel(Model& model, glm::mat4& matrix);
 	void Execute();
 
 	std::string name;

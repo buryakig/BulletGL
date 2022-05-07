@@ -26,7 +26,7 @@ void Material::SetVector(std::string name, glm::vec4 value)
 	vectorList[name] = value;
 }
 
-void Material::SetTexture(std::string name, unsigned int value)
+void Material::SetTexture(std::string name, Texture* value)
 {
 	textureList[name] = value;
 }
@@ -61,7 +61,11 @@ void Material::Use()
 	for (auto const& x : textureList)
 	{
 		glUniform1i(GetUniformLocation(x.first), texIdx);
-		glBindTextureUnit(texIdx, x.second);
+		
+		//glActiveTexture(GL_TEXTURE0 + texIdx);
+		//glBindTexture(GL_TEXTURE_2D, x.second->id);
+		
+		glBindTextureUnit(texIdx, x.second->id);
 		++texIdx;
 	}
 }

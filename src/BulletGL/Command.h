@@ -8,18 +8,22 @@ public:
 	void virtual Execute() = 0;
 };
 
-class DrawMeshCommand : public Command
+class DrawModelCommand : public Command
 {
 public:	
-	DrawMeshCommand(Model& vmesh, const glm::mat4& vmatrix, Material& vmaterial) :
-		model(vmesh), matrix(vmatrix), material(vmaterial)
+	DrawModelCommand(Model& vmodel, const glm::mat4& vmatrix, Material* vmaterial) :
+		model(vmodel), matrix(vmatrix), material(vmaterial)
 	{}
 
-	~DrawMeshCommand() {}
+	DrawModelCommand(Model& vmodel, const glm::mat4& vmatrix) :
+		model(vmodel), matrix(vmatrix), material(nullptr)
+	{}
+
+	~DrawModelCommand() {}
 
 	Model& model;
 	const glm::mat4& matrix;
-	Material& material;
+	Material* material;
 
 	void Execute() override;
 };

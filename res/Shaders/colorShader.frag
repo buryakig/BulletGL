@@ -9,10 +9,7 @@
 struct Material 
 {
     sampler2D texture_diffuse1;
-    sampler2D texture_diffuse2;
-    sampler2D texture_diffuse3;
     sampler2D texture_specular1;
-    sampler2D texture_specular2;
     float shininess;
     vec3 matDiffuseColor;
 }; 
@@ -69,6 +66,8 @@ uniform vec4 viewPos;
 
 uniform Material material;
 
+uniform sampler2D diff;
+
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
@@ -94,7 +93,7 @@ void main()
     vec3 normal = normalize(Normal);
     vec3 tangent = normalize(Tangent);
     vec3 bitangent = normalize(BiTangent);
-    vec4 diffuse = vec4(texture(material.texture_diffuse1, TexCoord));
+    vec4 diffuse = vec4(texture(diff, TexCoord));
     vec3 specular = vec3(texture(material.texture_specular1, TexCoord));
 
     // Directional lighting
@@ -102,7 +101,7 @@ void main()
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
-    FragColor = vec4(tangent, 1.0);// + vec4(material.matDiffuseColor, 0.0);
+    FragColor = vec4(diffuse.rgb, 1.0);// + vec4(material.matDiffuseColor, 0.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)

@@ -1,10 +1,15 @@
 #include "Command.h"
 
-void DrawMeshCommand::Execute()
+void DrawModelCommand::Execute()
 {
     //std::cout << "DrawMeshCommand executed" << std::endl;
     //std::cout << mesh.meshes[0]->vertices.size() << std::endl;
-
-    material.SetMatrix("model", matrix);
-    model.Draw(material);
+    if (material)
+    {
+        model.Draw(material, matrix);
+    }
+    else
+    {
+        model.Draw(matrix);
+    }
 }

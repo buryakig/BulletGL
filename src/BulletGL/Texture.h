@@ -4,19 +4,18 @@
 class Texture
 {
 public:
-	Texture(const char* imagePath);
-		//Texture(int w, int h) : width(w), height(h) { glGenTextures(1, &id); }{
+	Texture() = default;
 	~Texture();
 
-	void Prepare(int textureType, int filterMode);
 
-	unsigned int id;
+	unsigned int id = 0;
 
-	int width;
-	int height;
-	int nrChannels;
-	int format;
+	int width = 0;
+	int height = 0;
+	int nrChannels = 0;
+	unsigned int format = GL_RGB;
+	unsigned int internal_format = GL_RGB8;
 
-	unsigned char* data;
+	unsigned char* data = nullptr;
 };
 

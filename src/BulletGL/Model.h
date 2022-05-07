@@ -24,8 +24,7 @@ class Model
 {
 public:
     // model data 
-    vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh*>    meshes;
+    map<Mesh*, Material*>    meshes;
     string directory;
     bool gammaCorrection;
 
@@ -36,16 +35,33 @@ public:
 
     ~Model()
     {
-        for (int i = 0; i < meshes.size(); i++)
-            delete meshes[i];
+        for (auto meshmatpair : meshes)
+        {
+            delete meshmatpair.first;
+            delete meshmatpair.second;
+        }
     }
 
     // draws the model, and thus all its meshes
-    void Draw(Material& mat)
+    void Draw(Material* mat, const glm::mat4& modelMatrix)
     {
-        mat.Use();
-        for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i]->Draw();
+        mat->SetMatrix("model", modelMatrix);
+        mat->Use();
+        for (auto meshmatpair : meshes)
+            meshmatpair.first->Draw();
+    }
+
+    void Draw(const glm::mat4& modelMatrix)
+    {
+        for (auto meshmatpair : meshes)
+        {
+            if (meshmatpair.second)
+            {
+                meshmatpair.second->SetMatrix("model", modelMatrix);
+                meshmatpair.second->Use();
+            }
+            meshmatpair.first->Draw();
+        }
     }
 
     friend class ModelLoader;

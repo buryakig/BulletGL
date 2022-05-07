@@ -1,8 +1,13 @@
-﻿#include "Utils/Resources/Resources.h"
+﻿#include "UI.h"
+#include "Utils/Resources/Resources.h"
 #include "Utils/Resources/ModelLoader.h"
 
-std::vector<Shader*> Resources::shaders = {};
-std::vector<Model*> Resources::models = {};
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+std::vector<Shader*>	Resources::shaders = {};
+std::vector<Model*>		Resources::models = {};
+std::vector<Texture*>	Resources::textures = {};
 
 Shader* Resources::LoadShader(const char* vertexPath, const char* fragmentPath)
 {
@@ -98,12 +103,54 @@ Model* Resources::LoadModel(const char* modelPath)
 	return models.back();
 }
 
+Texture* Resources::LoadTexture(const char* imagePath, unsigned int  filterMode)
+{
+	Texture* texture = new Texture();
 
+	texture->data = stbi_load(imagePath, &texture->width, &texture->height, &texture->nrChannels, 0);
+	if (!texture->data)
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+
+	cout << "Loaded texture from "s + imagePath << endl;
+	cout << "texture size: " << texture->width << "x" << texture->height << endl;
+
+	glCreateTextures(GL_TEXTURE_2D, 1, &texture->id);
+
+	glTextureParameteri(texture->id, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(texture->id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTextureParameteri(texture->id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(texture->id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (texture->nrChannels == 1)
+	{
+		texture->format = GL_RED;
+		texture->internal_format = GL_R8;
+	}
+	else if (texture->nrChannels == 3)
+	{
+		texture->format = GL_RGB;
+		texture->internal_format = GL_RGB8;
+	}
+	else if (texture->nrChannels == 4)
+	{
+		texture->format = GL_RGBA;
+		texture->internal_format = GL_RGBA8;
+	}
+
+	glTextureStorage2D(texture->id, 1, texture->internal_format, texture->width, texture->height);
+	glTextureSubImage2D(texture->id, 0, 0, 0, texture->width, texture->height, texture->format, GL_UNSIGNED_BYTE, texture->data);
+	
+	textures.push_back(texture);
+	return texture;
+}
 
 
 void Resources::DeallocateMemory()
 {
 	for (auto shader : shaders)	delete shader;
 	for (auto model : models)	delete model;
+	for (auto texture : textures)	delete texture;
 }
 

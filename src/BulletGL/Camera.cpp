@@ -19,7 +19,7 @@ void Camera::Update()
     ProcessMovement();
 
     cameraToWorldMatrix = glm::lookAt(transform->position, transform->position + transform->forward, transform->up);
-    viewProjectionMatrix = glm::perspective(glm::radians(fov), 1600.0f / 980.0f, 0.1f, 100.0f);
+    viewProjectionMatrix = glm::perspective(glm::radians(fov), 1600.0f / 980.0f, 0.1f, 1000.0f);
 
     UpdateCameraDataBuffer();
 
@@ -100,13 +100,13 @@ void Camera::ProcessMovement()
 
     //float cameraSpeed = static_cast<float>(2.5 * deltaTime);
     if (glfwGetKey(glfwWindow, GLFW_KEY_W) == GLFW_PRESS)
-        transform->position += transform->forward * 0.1f;
+        transform->position += transform->forward;
     if (glfwGetKey(glfwWindow, GLFW_KEY_S) == GLFW_PRESS)
-        transform->position -= transform->forward * 0.1f;
+        transform->position -= transform->forward;
     if (glfwGetKey(glfwWindow, GLFW_KEY_A) == GLFW_PRESS)
-        transform->position -= glm::normalize(glm::cross(transform->forward, transform->up)) * 0.1f;
+        transform->position -= glm::normalize(glm::cross(transform->forward, transform->up));
     if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
-        transform->position += glm::normalize(glm::cross(transform->forward, transform->up)) * 0.1f;
+        transform->position += glm::normalize(glm::cross(transform->forward, transform->up));
 }
 
 void Camera::AddCommandBuffer(CommandBuffer* cb)

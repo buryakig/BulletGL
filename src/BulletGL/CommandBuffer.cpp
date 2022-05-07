@@ -8,9 +8,19 @@ CommandBuffer::~CommandBuffer()
 	}
 }
 
-void CommandBuffer::DrawMesh(Model& mesh, glm::mat4& matrix, Material& material)
+//void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
+//{
+//	commands.push_back(new DrawModelCommand(model, matrix, material));
+//}
+
+void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix, Material* material)
 {
-	commands.push_back(new DrawMeshCommand(mesh, matrix, material));
+	commands.push_back(new DrawModelCommand(model, matrix, material));
+}
+
+void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
+{
+	commands.push_back(new DrawModelCommand(model, matrix));
 }
 
 void CommandBuffer::Execute()
