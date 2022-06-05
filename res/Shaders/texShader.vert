@@ -1,22 +1,19 @@
-#version 330 core
-layout (location = 0) in vec3 vPos;
-layout (location = 2) in vec2 vTexCoord;
-layout (location = 3) in vec3 vColor;
+#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 2) in vec2 aTexCoord;
 
-out vec3 vertexColor;
-out vec2 texCoord;
+out vec2 TexCoord;
 
 
-layout (std140) uniform cameraMatrices
-{
-	mat4 projection;
-	mat4 view;
+layout(std140, binding = 0) uniform PerFrameData {
+ uniform mat4 MVP;
+ uniform vec3 cameraPos;
 };
+
 uniform mat4 model;
 
 void main()
 {
-   vertexColor = vColor;
-   texCoord = vTexCoord;
-   gl_Position = projection *view *model * vec4(vPos, 1.0);
+   TexCoord = aTexCoord;
+   gl_Position = MVP * model * vec4(aPos, 1.0);
 }

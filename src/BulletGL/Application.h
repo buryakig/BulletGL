@@ -1,20 +1,23 @@
 #pragma once
 #include "Window.h"
 
-class Application
+namespace BulletGL
 {
-public:
+	class Application
+	{
+	public:
 
-	Application();
-	~Application();
+		Application();
+		~Application();
 
-	void Init();
-	int Run();
+		void Init();
+		int Run();
 
-	void OnUpdate();
-	void OnStart();
-	void OnDestroy();
+		void OnUpdate();
+		void OnStart();
+		void OnDestroy();
 
-	Window* window;
-};
+		Window* window;
+	};
 
+}

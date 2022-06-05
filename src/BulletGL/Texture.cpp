@@ -3,7 +3,10 @@
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::~Texture()
+namespace BulletGL
 {
-	stbi_image_free(data);
+	Texture::~Texture()
+	{
+		stbi_image_free(data);
+	}
 }

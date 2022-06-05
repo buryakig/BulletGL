@@ -6,54 +6,57 @@
 #include "Shader.h"
 
 
-
-struct PerFrameCameraData {
-	glm::mat4 mvp;
-	glm::vec3 cameraPos;
-};
-
-class Camera
+namespace BulletGL
 {
-public:
 
+	struct PerFrameCameraData {
+		glm::mat4 mvp;
+		glm::vec3 cameraPos;
+	};
 
-	Camera(Window* w) : fov(60)
+	class Camera
 	{
-		window = w;
-		transform = new Transform();
-		transform->position = glm::vec3(0.0, 0.0, -10.0);
-	}
-
-	~Camera()
-	{
-		delete transform;
-	}
-
-	Window* window;
-	Transform* transform;
-
-	glm::mat4 cameraToWorldMatrix;
-	glm::mat4 viewProjectionMatrix;
+	public:
 
 
+		Camera(Window* w) : fov(60)
+		{
+			window = w;
+			transform = new Transform();
+			transform->position = glm::vec3(0.0, 0.0, -10.0);
+		}
 
-	float fov;
+		~Camera()
+		{
+			delete transform;
+		}
 
-	void SetUp();
-	void Update();
+		Window* window;
+		Transform* transform;
 
-	void CreateCameraDataBuffer();
-	void UpdateCameraDataBuffer();
+		glm::mat4 cameraToWorldMatrix;
+		glm::mat4 viewProjectionMatrix;
 
-	void ProcessMovement();
 
-	void AddCommandBuffer(CommandBuffer* cb);
-	void ExecuteCommandBuffers();
 
-private:
-	unsigned int cameraUniformBuffer;
+		float fov;
 
-	PerFrameCameraData cameraData;
+		void SetUp();
+		void Update();
 
-	std::vector<CommandBuffer*> cmdBuffers;
-};
+		void CreateCameraDataBuffer();
+		void UpdateCameraDataBuffer();
+
+		void ProcessMovement();
+
+		void AddCommandBuffer(CommandBuffer* cb);
+		void ExecuteCommandBuffers();
+
+	private:
+		unsigned int cameraUniformBuffer;
+
+		PerFrameCameraData cameraData;
+
+		std::vector<CommandBuffer*> cmdBuffers;
+	};
+}

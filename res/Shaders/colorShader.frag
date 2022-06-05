@@ -4,12 +4,13 @@
 
 /////////////// MACROS ///////////////
 
-
-
 struct Material 
 {
-    sampler2D texture_diffuse1;
-    sampler2D texture_specular1;
+    sampler2D texture_diffuse;
+    sampler2D texture_normal;
+    sampler2D texture_specular;
+    sampler2D texture_metallic;
+    sampler2D texture_ao;
     float shininess;
     vec3 matDiffuseColor;
 }; 
@@ -66,9 +67,7 @@ uniform vec4 viewPos;
 
 uniform Material material;
 
-uniform sampler2D diff;
-
-uniform DirLight dirLight;
+DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 
@@ -88,20 +87,25 @@ float LinearizeDepth(float depth)
 
 void main()
 {
+    dirLight.direction = vec3(-1.0, -1.0 , -1.0);
+    dirLight.ambient = vec3(0.4, 0.4 , 0.4);
+    dirLight.diffuse = vec3(0.65, 0.55 , 0.5);
+    dirLight.specular = vec3(0.65, 0.55 , 0.5);
+
     // properties
     vec3 viewDir = normalize(viewPos.xyz - FragPos);
     vec3 normal = normalize(Normal);
     vec3 tangent = normalize(Tangent);
     vec3 bitangent = normalize(BiTangent);
-    vec4 diffuse = vec4(texture(diff, TexCoord));
-    vec3 specular = vec3(texture(material.texture_specular1, TexCoord));
+    vec4 diffuse = vec4(texture(material.texture_diffuse, TexCoord));
+    vec3 specular = vec3(texture(material.texture_specular, TexCoord));
 
     // Directional lighting
-    vec3 result = CalcDirLight(dirLight, normal, viewDir, diffuse.rgb, specular);
+    vec3 result = CalcDirLight(dirLight, normal, viewDir, diffuse.rgb, vec3(1.0 - specular.r));
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
-    FragColor = vec4(diffuse.rgb, 1.0);// + vec4(material.matDiffuseColor, 0.0);
+    FragColor = vec4(result.rgb, 1.0);// + vec4(material.matDiffuseColor, 0.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)
@@ -111,11 +115,11 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, 
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 5.0);
     // combine result
     vec3 ambient = light.ambient * diffuseColor;
     vec3 diffuse = light.diffuse * diff * diffuseColor;
-    vec3 specular = light.ambient * spec * specularColor;
+    vec3 specular = light.specular * spec * specularColor;
     return ambient + diffuse + specular;
 }
 

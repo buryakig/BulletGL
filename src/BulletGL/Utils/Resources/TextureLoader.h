@@ -2,9 +2,12 @@
 #include <fstream>
 #include "yaml-cpp/yaml.h"
 
-class TextReader
+namespace BulletGL
 {
-public:
-	TextReader() {}
-	~TextReader() {}
-};
+	class TextReader
+	{
+	public:
+		TextReader() {}
+		~TextReader() {}
+	};
+}

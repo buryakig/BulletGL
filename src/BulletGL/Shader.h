@@ -1,28 +1,34 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include "Core.h"
 
-class Shader
+namespace BulletGL
 {
-public:
-	unsigned int programID;
+	class Shader
+	{
+	public:
+		unsigned int programID;
 
-	// constructor reads and builds the shader
-	Shader() {};
-	Shader(const char* vertexPath, const char* fragmentPath);
-	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
-	~Shader() {
-		glDeleteProgram(programID); 
-	}
-	// use/activate the shader
-	void use() const;
+		// constructor reads and builds the shader
+		Shader() {};
+		Shader(const char* vertexPath, const char* fragmentPath);
+		Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
+		~Shader() {
+			glDeleteProgram(programID);
+		}
+		// use/activate the shader
+		void use() const;
 
-private:
-	Shader(unsigned int id) : programID(id) {}
+		static void SetUp();
 
-	friend class Resources;
-};
+		static Shader* defaultShader;
+		static Shader* emptyShader;
 
-#endif
+	private:
+		Shader(unsigned int id) : programID(id) {}
 
+		friend class Resources;
+	};
+	
+
+}

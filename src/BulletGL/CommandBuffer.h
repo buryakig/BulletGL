@@ -5,19 +5,22 @@
 
 
 
-class CommandBuffer
+namespace BulletGL
 {
-public:
+	class CommandBuffer
+	{
+	public:
 
-	CommandBuffer() : name("")
-	{}
+		CommandBuffer() : name("")
+		{}
 
-	~CommandBuffer();
+		~CommandBuffer();
 
-	void DrawModel(Model& model, glm::mat4& matrix, Material* material);
-	void DrawModel(Model& model, glm::mat4& matrix);
-	void Execute();
+		void DrawModel(Model& model, glm::mat4& matrix, Material* material);
+		void DrawModel(Model& model, glm::mat4& matrix);
+		void Execute();
 
-	std::string name;
-	std::vector<Command*> commands;
-};
+		std::string name;
+		std::vector<Command*> commands;
+	};
+}

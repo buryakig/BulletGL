@@ -20,49 +20,52 @@
 #include <vector>
 using namespace std;
 
-class Model
+namespace BulletGL
 {
-public:
-    // model data 
-    map<Mesh*, Material*>    meshes;
-    string directory;
-    bool gammaCorrection;
-
-    // constructor, expects a filepath to a 3D model.
-    Model()
+    class Model
     {
-    }
+    public:
+        // model data 
+        map<Mesh*, Material*>    meshes;
+        string directory;
+        bool gammaCorrection;
 
-    ~Model()
-    {
-        for (auto meshmatpair : meshes)
+        // constructor, expects a filepath to a 3D model.
+        Model()
         {
-            delete meshmatpair.first;
-            delete meshmatpair.second;
         }
-    }
 
-    // draws the model, and thus all its meshes
-    void Draw(Material* mat, const glm::mat4& modelMatrix)
-    {
-        mat->SetMatrix("model", modelMatrix);
-        mat->Use();
-        for (auto meshmatpair : meshes)
-            meshmatpair.first->Draw();
-    }
-
-    void Draw(const glm::mat4& modelMatrix)
-    {
-        for (auto meshmatpair : meshes)
+        ~Model()
         {
-            if (meshmatpair.second)
+            for (auto meshmatpair : meshes)
             {
-                meshmatpair.second->SetMatrix("model", modelMatrix);
-                meshmatpair.second->Use();
+                delete meshmatpair.first;
+                //delete meshmatpair.second;
             }
-            meshmatpair.first->Draw();
         }
-    }
 
-    friend class ModelLoader;
-};
+        // draws the model, and thus all its meshes
+        void Draw(Material* mat, const glm::mat4& modelMatrix)
+        {
+            mat->SetMatrix("model", modelMatrix);
+            mat->Use();
+            for (auto meshmatpair : meshes)
+                meshmatpair.first->Draw();
+        }
+
+        void Draw(const glm::mat4& modelMatrix)
+        {
+            for (auto meshmatpair : meshes)
+            {
+                if (meshmatpair.second)
+                {
+                    meshmatpair.second->SetMatrix("model", modelMatrix);
+                    meshmatpair.second->Use();
+                }
+                meshmatpair.first->Draw();
+            }
+        }
+
+        friend class ModelLoader;
+    };
+}

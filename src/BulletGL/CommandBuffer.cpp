@@ -1,32 +1,35 @@
 #include "CommandBuffer.h"
 
-CommandBuffer::~CommandBuffer()
+namespace BulletGL
 {
-	for (Command* cmd : commands)
+	CommandBuffer::~CommandBuffer()
 	{
-		delete cmd;
+		for (Command* cmd : commands)
+		{
+			delete cmd;
+		}
 	}
-}
 
-//void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
-//{
-//	commands.push_back(new DrawModelCommand(model, matrix, material));
-//}
+	//void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
+	//{
+	//	commands.push_back(new DrawModelCommand(model, matrix, material));
+	//}
 
-void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix, Material* material)
-{
-	commands.push_back(new DrawModelCommand(model, matrix, material));
-}
-
-void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
-{
-	commands.push_back(new DrawModelCommand(model, matrix));
-}
-
-void CommandBuffer::Execute()
-{
-	for (Command* cmd : commands)
+	void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix, Material* material)
 	{
-		cmd->Execute();
+		commands.push_back(new DrawModelCommand(model, matrix, material));
+	}
+
+	void CommandBuffer::DrawModel(Model& model, glm::mat4& matrix)
+	{
+		commands.push_back(new DrawModelCommand(model, matrix));
+	}
+
+	void CommandBuffer::Execute()
+	{
+		for (Command* cmd : commands)
+		{
+			cmd->Execute();
+		}
 	}
 }

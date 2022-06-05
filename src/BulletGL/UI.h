@@ -3,19 +3,22 @@
 #include "Shader.h"
 #include <imgui/imgui.h>
 
-class UI
+namespace BulletGL
 {
-public:
-	UI(Window* wnd) : window(wnd) { };
+	class UI
+	{
+	public:
+		UI(Window* wnd) : window(wnd) { };
 
-	~UI();
+		~UI();
 
-	void SetUp();
-	void Draw();
+		void SetUp();
+		void Draw();
 
-private:
+	private:
 
-	Window* window;
+		Window* window;
 
-	const char* glsl_version = "#version 460";
-};
+		const char* glsl_version = "#version 460";
+	};
+}

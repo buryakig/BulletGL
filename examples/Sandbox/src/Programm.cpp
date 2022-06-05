@@ -7,110 +7,98 @@
 #include "Light.h"
 #include "UI.h"
 #include "Utils/Resources/Resources.h"
-#include "Managers/SceneManager.h"
 
 #include <easy/profiler.h>
 
 
-Model *cube;
-Camera* mainCamera;
-
-Light* mainLight;
-
-Shader* quadShader;
-Shader* shadowmapShader;
-Shader* colorShader;
-
-Material* quadMaterial;
-Material* litMaterial;
-
-UI* ui;
-
-CommandBuffer* mainCmdBuffer;
-SceneManager* sceneManager;
-
-glm::mat4 cubeModel;
-
-
-void Application::OnStart()
+namespace BulletGL
 {
+    Model* cube;
+    Camera* mainCamera;
 
-    sceneManager = new SceneManager();
-    //sceneManager->LoadScene("res/Scenes/Scene.yaml");
+    Light* mainLight;
 
-    mainCmdBuffer = new CommandBuffer();
+    Shader* shadowmapShader;
+    Shader* defaultShader;
+    Shader* emptyShader;
 
-    mainCamera = new Camera(this->window);
-    mainCamera->SetUp();
+    Material* quadMaterial;
+    Material* litMaterial;
 
-    mainLight = new Light(glm::vec3(-3.0f, 3.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    mainLight->SetUp();
+    UI* ui;
 
-    ui = new UI(this->window);
-    ui->SetUp();
+    CommandBuffer* mainCmdBuffer;
+
+    glm::mat4 sponzaLocalMatrix;
 
 
-    cubeModel = glm::mat4(1.0f);
-    cubeModel = glm::scale(cubeModel, glm::vec3(0.1, 0.1, 0.1));
+    void Application::OnStart()
+    {
+        mainCmdBuffer = new CommandBuffer();
 
-    colorShader = Resources::LoadShader("res/Shaders/colorShader.vert", "res/Shaders/colorShader.frag");
+        mainCamera = new Camera(this->window);
+        mainCamera->SetUp();
 
-    quadShader = Resources::LoadShader("res/Shaders/solidColor.vert", "res/Shaders/tunableColor.frag");
-    shadowmapShader = Resources::LoadShader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
+        mainLight = new Light(glm::vec3(-3.0f, 3.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        mainLight->SetUp();
 
-    quadMaterial = new Material(quadShader);
-    quadMaterial->SetColor("fColor", glm::vec4(1.0, 0.0, 0.0, 1.0));
+        ui = new UI(this->window);
+        ui->SetUp();
 
-    litMaterial = new Material(colorShader);
-    cube = Resources::LoadModel("res/Models/sponza/sponza.obj");
+        // Matrices
+        sponzaLocalMatrix = glm::mat4(1.0f);
+        sponzaLocalMatrix = glm::scale(sponzaLocalMatrix, glm::vec3(0.1, 0.1, 0.1));
 
-    mainCmdBuffer->DrawModel(*cube, cubeModel);
+        // Shaders
+        Shader::SetUp();
+        shadowmapShader = Resources::LoadShader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
 
-    mainCamera->AddCommandBuffer(mainCmdBuffer);
+        // Materials
+        Material::SetUp();
+
+        // Models
+        cube = Resources::LoadModel("res/Models/sponza/sponza.obj");
+
+        mainCmdBuffer->DrawModel(*cube, sponzaLocalMatrix);
+
+        mainCamera->AddCommandBuffer(mainCmdBuffer);
+    }
+
+    void Application::OnUpdate()
+    {
+        glEnable(GL_DEPTH_TEST);
+        mainCamera->Update();
+
+        Texture* texture = Resources::textures[0];
+
+        mainCamera->ExecuteCommandBuffers();
+
+        ui->Draw();
+    }
+
+
+    void Application::OnDestroy()
+    {
+        delete mainLight;
+        delete mainCamera;
+        delete mainCmdBuffer;
+        delete ui;
+
+        Resources::DeallocateMemory();
+        Material::DeallocateMemory();
+    }
+
+
+
+
 }
-
-void Application::OnUpdate()
-{
-    glEnable(GL_DEPTH_TEST);
-    mainCamera->Update();
-
-    Texture* texture = Resources::textures[0];
-
-    ImGui::Begin("OpenGL Texture Text");
-    ImGui::Text("pointer = %p", texture->id);
-    ImGui::Text("size = %d x %d", texture->width, texture->height);
-    ImGui::Image((void*)(intptr_t)texture->id, ImVec2(texture->width, texture->height));
-    ImGui::End();
-
-    mainCamera->ExecuteCommandBuffers();
-
-    ui->Draw();
-}
-
-
-void Application::OnDestroy()
-{
-    delete quadMaterial;
-    delete litMaterial;
-    delete mainLight;
-    delete mainCamera;
-    delete mainCmdBuffer;
-    delete ui;
-    delete sceneManager;
-
-    Resources::DeallocateMemory();
-}
-
-
 
 
 int main()
 {
-	Application App;
+    BulletGL::Application App;
 
-	App.Init();
-	
-	App.Run();
+    App.Init();
+
+    App.Run();
 }
-
-

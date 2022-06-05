@@ -2,33 +2,36 @@
 
 #include "Core.h"
 
-class Window
+namespace BulletGL
 {
-public:
+	class Window
+	{
+	public:
 
-	int width, height;
-	bool observerViewMode;
-	float aspectRatio;
+		int width, height;
+		bool observerViewMode;
+		float aspectRatio;
 
-	Window();
-	Window(int w, int h);
+		Window();
+		Window(int w, int h);
 
-	void Initialize();
-	void SetCurrent();
-	void DestroyResources();
-	void ProcessInput();
-	void SwapBuffers();
-	void PollEvents();
-	void Close();
-	void RecalculateSize();
+		void Initialize();
+		void SetCurrent();
+		void DestroyResources();
+		void ProcessInput();
+		void SwapBuffers();
+		void PollEvents();
+		void Close();
+		void RecalculateSize();
 
-	bool ShouldClose();
-	bool Create(const std::string& name, const int& width, const int& height);
+		bool ShouldClose();
+		bool Create(const std::string& name, const int& width, const int& height);
 
-	GLFWwindow* GetInstance();
+		GLFWwindow* GetInstance();
 
-private:
-	GLFWwindow* instance;
-};
+	private:
+		GLFWwindow* instance;
+	};
 
-void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
+	void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
+}

@@ -1,15 +1,18 @@
 #include "Command.h"
 
-void DrawModelCommand::Execute()
+namespace BulletGL
 {
-    //std::cout << "DrawMeshCommand executed" << std::endl;
-    //std::cout << mesh.meshes[0]->vertices.size() << std::endl;
-    if (material)
+    void DrawModelCommand::Execute()
     {
-        model.Draw(material, matrix);
-    }
-    else
-    {
-        model.Draw(matrix);
+        //std::cout << "DrawMeshCommand executed" << std::endl;
+        //std::cout << mesh.meshes[0]->vertices.size() << std::endl;
+        if (material)
+        {
+            model.Draw(material, matrix);
+        }
+        else
+        {
+            model.Draw(matrix);
+        }
     }
 }
