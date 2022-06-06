@@ -100,9 +100,9 @@ namespace BulletGL
 		return shaders.back();
 	}
 
-	Model* Resources::LoadModel(const char* modelPath)
+	Model* Resources::LoadModel(const char* modelPath, bool processMaterial)
 	{
-		models.push_back(ModelLoader::loadModel(modelPath));
+		models.push_back(ModelLoader::loadModel(modelPath, processMaterial));
 		return models.back();
 	}
 
@@ -130,6 +130,11 @@ namespace BulletGL
 		{
 			texture->format = GL_RED;
 			texture->internal_format = GL_R8;
+		}
+		else if (texture->nrChannels == 2)
+		{
+			texture->format = GL_RG;
+			texture->internal_format = GL_RG8;
 		}
 		else if (texture->nrChannels == 3)
 		{

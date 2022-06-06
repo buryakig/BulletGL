@@ -10,7 +10,7 @@ namespace BulletGL
     public:
 
         // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-        static Model* loadModel(string const& path)
+        static Model* loadModel(string const& path, bool processMaterial)
         {
             std::string directory = path.substr(0, path.find_last_of("/"));
             // read file via ASSIMP
@@ -25,13 +25,13 @@ namespace BulletGL
 
             Model* model = new Model();
             // process ASSIMP's root node recursively
-            processNode(aScene->mRootNode, aScene, model, directory);
+            processNode(aScene->mRootNode, aScene, model, directory, processMaterial);
 
             return model;
         }
 
         // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-        static void processNode(aiNode* node, const aiScene* aScene, Model* model, const std::string& directory)
+        static void processNode(aiNode* node, const aiScene* aScene, Model* model, const std::string& directory, bool processMaterial)
         {
             // process each mesh located at the current node
             for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -40,13 +40,17 @@ namespace BulletGL
                 // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
                 aiMesh* assimpMesh = aScene->mMeshes[node->mMeshes[i]];
                 aiMaterial* assimpMat = aScene->mMaterials[assimpMesh->mMaterialIndex];
-                model->meshes[processMesh(assimpMesh, aScene)] = parseMaterial(assimpMesh, assimpMat, aScene, directory);
+                if(processMaterial)
+                    model->meshes[processMesh(assimpMesh, aScene)] = parseMaterial(assimpMesh, assimpMat, aScene, directory);
+                else
+                    model->meshes[processMesh(assimpMesh, aScene)] = Material::emptyMaterial;
+
 
             }
             // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
             for (unsigned int i = 0; i < node->mNumChildren; i++)
             {
-                processNode(node->mChildren[i], aScene, model, directory);
+                processNode(node->mChildren[i], aScene, model, directory, processMaterial);
             }
 
         }
@@ -67,10 +71,10 @@ namespace BulletGL
                 }
             }
 
-            if (aMaterial->GetTextureCount(aiTextureType_DISPLACEMENT) > 0)
+            if (aMaterial->GetTextureCount(aiTextureType_NORMALS) > 0)
             {
                 aiString file;
-                aMaterial->GetTexture(aiTextureType_DISPLACEMENT, 0, &file);
+                aMaterial->GetTexture(aiTextureType_NORMALS, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
 
                 Texture* texture = Resources::LoadTexture(texturePath.c_str(), GL_NEAREST);
@@ -113,6 +117,21 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_ao", texture);
+                }
+            }
+
+            if(aMaterial->GetTextureCount(aiTextureType_DISPLACEMENT) > 0)
+            {
+                aiString file;
+                aMaterial->GetTexture(aiTextureType_DISPLACEMENT, 0, &file);
+                std::string texturePath = directory + "/" + file.C_Str();
+
+                cout << "Found: " << texturePath << endl;
+
+                Texture* texture = Resources::LoadTexture(texturePath.c_str(), GL_NEAREST);
+                if (texture)
+                {
+                    material->SetTexture("material.texture_height", texture);
                 }
             }
 

@@ -12,7 +12,7 @@ namespace BulletGL
 		Resources() = delete;
 
 		static Shader* LoadShader(const char* vertexPath, const char* fragmentPath);
-		static Model* LoadModel(const char* path);
+		static Model* LoadModel(const char* path, bool processMaterial = true);
 		static Texture* LoadTexture(const char* imagePath, unsigned int  filterMode = GL_LINEAR);
 
 		static void DeallocateMemory();

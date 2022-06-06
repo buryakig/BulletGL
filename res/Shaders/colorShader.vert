@@ -12,6 +12,10 @@ out vec3 BiTangent;
 out vec2 TexCoord;
 out vec3 FragPos;
 out vec3 Color;
+out vec3 CamPos;
+out mat3 TBN;
+out vec3 TangentViewPos;
+out vec3 TangentFragPos;
 
 
 layout(std140, binding = 0) uniform PerFrameData {
@@ -23,6 +27,8 @@ uniform mat4 model;
 
 void main()
 {
+    CamPos = cameraPos;
+
     gl_Position = MVP * model * vec4(aPos, 1.0);
     FragPos = vec3(model * vec4(aPos, 1.0));
     
@@ -33,4 +39,9 @@ void main()
 
     TexCoord = aTexCoord;
     Color = aColor;
+
+    TBN = mat3(Tangent, BiTangent, Normal);
+    
+    TangentViewPos  = TBN * cameraPos;
+    TangentFragPos  = TBN * FragPos;
 }

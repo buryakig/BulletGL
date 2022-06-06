@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Model.h"
+#include "UI.h"
 
 namespace BulletGL
 {
@@ -29,6 +30,11 @@ namespace BulletGL
         glViewport(0, 0, window->width, window->height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Text("Camera pos. (%.1f, %.1f, %.1f)", transform->position.x,transform->position.y,transform->position.z);               // Display some text (you can use a format strings too)
+
+        ImGui::End();
     }
 
     void Camera::CreateCameraDataBuffer()

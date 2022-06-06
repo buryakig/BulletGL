@@ -1,4 +1,4 @@
-#version 330 core
+#version 450 core
 
 #define NR_POINT_LIGHTS 1  
 
@@ -8,6 +8,7 @@ struct Material
 {
     sampler2D texture_diffuse;
     sampler2D texture_normal;
+    sampler2D texture_height;
     sampler2D texture_specular;
     sampler2D texture_metallic;
     sampler2D texture_ao;
@@ -60,10 +61,13 @@ in vec3 Normal;
 in vec3 Tangent;
 in vec3 BiTangent;
 in vec2 TexCoord;
+in vec3 CamPos;
 in vec3 FragPos;
 in vec3 Color;
+in vec3 TangentViewPos;
+in vec3 TangentFragPos;
 
-uniform vec4 viewPos;
+in mat3 TBN;
 
 uniform Material material;
 
@@ -79,29 +83,54 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec
 float near = 0.1; 
 float far  = 1000.0; 
 
+layout(std140, binding = 0) uniform PerFrameData {
+ uniform mat4 MVP;
+ uniform vec3 cameraPos;
+};
+
 float LinearizeDepth(float depth) 
 {
     float ndc = depth * 2.0 - 1.0; // back to NDC 
     return (2.0 * near * far) / (far + near - ndc * (far - near));	
 }
 
+vec3 GetNormalMapUnPacked(vec2 uv)
+{
+    vec4 normalMap = vec4(texture(material.texture_normal, uv));
+    normalMap.xyz = normalize(normalMap.xyz * 2.0 - 1.0);
+    return normalize(TBN * normalMap.xyz);
+}
+
+vec2 GetParallacMappingUVOffset(vec2 uv)
+{
+    vec3 tangentViewDir = normalize(TangentViewPos - TangentFragPos);
+    float height = texture(material.texture_height, uv).r;
+    return uv - tangentViewDir.xy * height * 0.01;
+}
+
 void main()
 {
-    dirLight.direction = vec3(-1.0, -1.0 , -1.0);
-    dirLight.ambient = vec3(0.4, 0.4 , 0.4);
+    vec2 texCoordsParallaxed = GetParallacMappingUVOffset(TexCoord);
+
+    vec4 diffuse = vec4(texture(material.texture_diffuse, texCoordsParallaxed));
+    if(diffuse.a < 0.5) discard;
+
+    dirLight.direction = normalize(vec3(-1.0, -1.0 , -1.0));
+    dirLight.ambient = vec3(0.2, 0.2 , 0.2);
     dirLight.diffuse = vec3(0.65, 0.55 , 0.5);
     dirLight.specular = vec3(0.65, 0.55 , 0.5);
 
     // properties
-    vec3 viewDir = normalize(viewPos.xyz - FragPos);
-    vec3 normal = normalize(Normal);
+    vec3 viewDir = normalize(cameraPos.xyz - FragPos);
+    //vec3 normal = normalize(Normal);
     vec3 tangent = normalize(Tangent);
     vec3 bitangent = normalize(BiTangent);
-    vec4 diffuse = vec4(texture(material.texture_diffuse, TexCoord));
-    vec3 specular = vec3(texture(material.texture_specular, TexCoord));
+    float specular = vec3(texture(material.texture_specular, texCoordsParallaxed)).r;
+    vec3 normalMap = GetNormalMapUnPacked(texCoordsParallaxed);
+
 
     // Directional lighting
-    vec3 result = CalcDirLight(dirLight, normal, viewDir, diffuse.rgb, vec3(1.0 - specular.r));
+    vec3 result = CalcDirLight(dirLight, normalMap.xyz, viewDir, diffuse.rgb, vec3(1.0 - specular));
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
@@ -110,7 +139,7 @@ void main()
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)
 {
-    vec3 lightDir = normalize(-light.direction);
+    vec3 lightDir = -light.direction;
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
@@ -121,6 +150,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, 
     vec3 diffuse = light.diffuse * diff * diffuseColor;
     vec3 specular = light.specular * spec * specularColor;
     return ambient + diffuse + specular;
+    //return specular;
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseColor, vec3 specularColor)

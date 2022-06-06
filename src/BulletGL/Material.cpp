@@ -47,9 +47,11 @@ namespace BulletGL
 
 	void Material::CreateDefaultMaterials()
 	{
-		materials.push_back(defaultMaterial = new Material(Shader::defaultShader));
-		materials.push_back(emptyMaterial = new Material(Shader::emptyShader));
+		defaultMaterial = new Material(Shader::defaultShader);
+		emptyMaterial = new Material(Shader::emptyShader);
 
+		Texture* uv_map = Resources::LoadTexture("res/Textures/uv_mapper.jpg");
+		emptyMaterial->SetTexture("texImage", uv_map);
 	}
 
 	unsigned int Material::GetUniformLocation(const std::string& uniformName)
