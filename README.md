@@ -5,6 +5,8 @@ Graphics library for quick prototyping
 ## Current Features
 - Forward Rendering
 - Directional Lights
+- Normal mapping
+- Parallax mapping
 - Assets loading pipeline
 - Gamma correction
 - Material pipeline
