@@ -106,11 +106,11 @@ namespace BulletGL
 		return models.back();
 	}
 
-	Texture* Resources::LoadTexture(const char* imagePath, unsigned int  filterMode)
+	Texture* Resources::LoadTexture(const char* imagePath, bool srgb, unsigned int  filterMode)
 	{
 		Texture* texture = new Texture();
-
-		texture->data = stbi_load(imagePath, &texture->width, &texture->height, &texture->nrChannels, 0);
+		int nrChannels = 0;
+		texture->data = stbi_load(imagePath, &texture->width, &texture->height, &nrChannels, 0);
 		if (!texture->data)
 		{
 			std::cout << "Failed to load texture" << std::endl;
@@ -126,28 +126,28 @@ namespace BulletGL
 		glTextureParameteri(texture->id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTextureParameteri(texture->id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		if (texture->nrChannels == 1)
+		if (nrChannels == 1)
 		{
 			texture->format = GL_RED;
-			texture->internal_format = GL_R8;
+			texture->internalFormat = GL_R8;
 		}
-		else if (texture->nrChannels == 2)
+		else if (nrChannels == 2)
 		{
 			texture->format = GL_RG;
-			texture->internal_format = GL_RG8;
+			texture->internalFormat = GL_RG8;
 		}
-		else if (texture->nrChannels == 3)
+		else if (nrChannels == 3)
 		{
 			texture->format = GL_RGB;
-			texture->internal_format = GL_RGB8;
+			texture->internalFormat = srgb ? GL_SRGB8 : GL_RGB8;
 		}
-		else if (texture->nrChannels == 4)
+		else if (nrChannels == 4)
 		{
 			texture->format = GL_RGBA;
-			texture->internal_format = GL_RGBA8;
+			texture->internalFormat = srgb ? GL_SRGB8_ALPHA8 : GL_RGBA8;
 		}
 
-		glTextureStorage2D(texture->id, 6, texture->internal_format, texture->width, texture->height);
+		glTextureStorage2D(texture->id, 6, texture->internalFormat, texture->width, texture->height);
 		glTextureSubImage2D(texture->id, 0, 0, 0, texture->width, texture->height, texture->format, GL_UNSIGNED_BYTE, texture->data);
 
 		glGenerateTextureMipmap(texture->id);

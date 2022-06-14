@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "Material.h"
+#include "RenderTexture.h"
 #include "Camera.h"
 #include "Light.h"
 #include "UI.h"
@@ -21,9 +22,13 @@ namespace BulletGL
     Shader* shadowmapShader;
     Shader* defaultShader;
     Shader* emptyShader;
+    Shader* screenShader;
 
     Material* quadMaterial;
     Material* litMaterial;
+
+    RenderTexture* renderTex;
+    RenderTexture* test_delete_me;
 
     UI* ui;
 
@@ -45,6 +50,9 @@ namespace BulletGL
         ui = new UI(this->window);
         ui->SetUp();
 
+        // Render Textures
+        renderTex = new RenderTexture(window->width, window->height, GL_RGBA, GL_RGBA16F, true);
+
         // Matrices
         sponzaLocalMatrix = glm::mat4(1.0f);
         sponzaLocalMatrix = glm::scale(sponzaLocalMatrix, glm::vec3(0.1, 0.1, 0.1));
@@ -52,6 +60,7 @@ namespace BulletGL
         // Shaders
         Shader::SetUp();
         shadowmapShader = Resources::LoadShader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
+        screenShader = Resources::LoadShader("res/Shaders/screenShader.vert", "res/Shaders/screenShader.frag");
 
         // Materials
         Material::SetUp();
@@ -66,12 +75,27 @@ namespace BulletGL
 
     void Application::OnUpdate()
     {
-        glEnable(GL_DEPTH_TEST);
         mainCamera->Update();
 
         Texture* texture = Resources::textures[0];
 
+        mainCamera->BindFrameBuffer(renderTex);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mainCamera->ExecuteCommandBuffers();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                
+        screenShader->use();
+        glUniform1i(glGetUniformLocation(screenShader->programID, "screenTex"),
+                        0);
+        glBindTextureUnit(0, renderTex->id);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
 
         ui->Draw();
     }

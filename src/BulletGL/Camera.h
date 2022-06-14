@@ -1,5 +1,6 @@
 #pragma once
 #include "CommandBuffer.h"
+#include "RenderTexture.h"
 #include "Transform.h"
 #include "Model.h"
 #include "Window.h"
@@ -48,6 +49,9 @@ namespace BulletGL
 		void UpdateCameraDataBuffer();
 
 		void ProcessMovement();
+
+		void BindFrameBuffer(RenderTexture* rTex);
+		void BindFrameBuffer(unsigned bufferID);
 
 		void AddCommandBuffer(CommandBuffer* cb);
 		void ExecuteCommandBuffers();

@@ -104,21 +104,44 @@ vec3 GetNormalMapUnPacked(vec2 uv)
 vec2 GetParallacMappingUVOffset(vec2 uv)
 {
     vec3 tangentViewDir = normalize(TangentViewPos - TangentFragPos);
-    float height = texture(material.texture_height, uv).r;
-    return uv - tangentViewDir.xy * height * 0.01;
+
+    const float heightScale = 0.1;
+
+    const float numLayers = 32.0;
+
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = 0.0;
+    
+    vec2 p = tangentViewDir.xy * heightScale;
+    vec2 uvstep = p / numLayers;
+
+    vec2 currentUVs = uv;
+    float currentDepthMapValue  = 1.0 - texture(material.texture_height, uv).r;
+
+    while(currentLayerDepth < currentDepthMapValue )
+    {
+        currentUVs -= uvstep;
+        currentDepthMapValue  = 1.0 - texture(material.texture_height, uv).r;
+        currentLayerDepth += layerDepth;
+    }
+
+    return currentUVs;
 }
 
 void main()
 {
-    vec2 texCoordsParallaxed = GetParallacMappingUVOffset(TexCoord);
-
+    #if 0
+        vec2 texCoordsParallaxed = GetParallacMappingUVOffset(TexCoord);
+    #else
+        vec2 texCoordsParallaxed = TexCoord;
+    #endif
     vec4 diffuse = vec4(texture(material.texture_diffuse, texCoordsParallaxed));
     if(diffuse.a < 0.5) discard;
 
     dirLight.direction = normalize(vec3(-1.0, -1.0 , -1.0));
-    dirLight.ambient = vec3(0.2, 0.2 , 0.2);
+    dirLight.ambient = vec3(0.1, 0.1 , 0.1);
     dirLight.diffuse = vec3(0.65, 0.55 , 0.5);
-    dirLight.specular = vec3(0.65, 0.55 , 0.5);
+    dirLight.specular = vec3(0.5, 0.45 , 0.4);
 
     // properties
     vec3 viewDir = normalize(cameraPos.xyz - FragPos);
@@ -131,7 +154,7 @@ void main()
 
     // Directional lighting
     vec3 result = CalcDirLight(dirLight, normalMap.xyz, viewDir, diffuse.rgb, vec3(1.0 - specular));
-
+    
     float depth = LinearizeDepth(gl_FragCoord.z) / far;
 
     FragColor = vec4(result.rgb, 1.0);// + vec4(material.matDiffuseColor, 0.0);

@@ -17,7 +17,7 @@ namespace BulletGL
 		int height = 0;
 
 		int filterMode = 0;
-		//int nrChannels = 3;
+		int nrChannels = 3;
 		int mipmapCount = 1;
 		unsigned int format = 0;
 		unsigned int internalFormat = 0;

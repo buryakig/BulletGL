@@ -117,6 +117,16 @@ namespace BulletGL
             transform->position += glm::normalize(glm::cross(transform->forward, transform->up));
     }
 
+    void Camera::BindFrameBuffer(RenderTexture* rTex)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, rTex->FBO);
+    }
+
+    void Camera::BindFrameBuffer(unsigned bufferID)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, bufferID);
+    }
+
     void Camera::AddCommandBuffer(CommandBuffer* cb)
     {
         cmdBuffers.push_back(cb);
