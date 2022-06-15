@@ -3,7 +3,7 @@
 #include <iostream>
 	
 #include "Shader.h"
-#include "Texture.h"
+#include "Texture2D.h"
 
 namespace BulletGL
 {
@@ -20,7 +20,7 @@ namespace BulletGL
 		void SetMatrix(std::string name, glm::mat4 value);
 		void SetColor(std::string name, glm::vec4 value);
 		void SetVector(std::string name, glm::vec4 value);
-		void SetTexture(std::string name, Texture* value);
+		void SetTexture(std::string name, Texture2D* value);
 
 		static void SetUp();
 		static void CreateDefaultMaterials();
@@ -37,7 +37,7 @@ namespace BulletGL
 
 		std::map<std::string, int> intList;
 		std::map<std::string, float> floatList;
-		std::map<std::string, Texture*> textureList;
+		std::map<std::string, Texture2D*> textureList;
 		std::map<std::string, glm::mat4> matrixList;
 		std::map<std::string, glm::vec4> vectorList;
 

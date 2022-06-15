@@ -34,7 +34,7 @@ namespace BulletGL
 		vectorList[name] = value;
 	}
 
-	void Material::SetTexture(std::string name, Texture* value)
+	void Material::SetTexture(std::string name, Texture2D* value)
 	{
 		textureList[name] = value;
 	}
@@ -50,7 +50,7 @@ namespace BulletGL
 		defaultMaterial = new Material(Shader::defaultShader);
 		emptyMaterial = new Material(Shader::emptyShader);
 
-		Texture* uv_map = Resources::LoadTexture("res/Textures/uv_mapper.jpg");
+		Texture2D* uv_map = Resources::LoadTexture("res/Textures/uv_mapper.jpg");
 		emptyMaterial->SetTexture("texImage", uv_map);
 	}
 

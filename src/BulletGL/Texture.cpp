@@ -5,9 +5,5 @@
 
 namespace BulletGL
 {
-	Texture::~Texture()
-	{
-		if(data)
-			stbi_image_free(data);
-	}
+
 }

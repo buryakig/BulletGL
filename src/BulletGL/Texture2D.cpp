@@ -1,13 +1,13 @@
-#include "Texture.h"
+#include "Texture2D.h"
 
-//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 namespace BulletGL
 {
-	Texture::~Texture()
+	Texture2D::~Texture2D()
 	{
-		if(data)
+		if (data)
 			stbi_image_free(data);
 	}
 }

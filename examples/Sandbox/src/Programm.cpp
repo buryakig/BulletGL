@@ -14,7 +14,7 @@
 
 namespace BulletGL
 {
-    Model* cube;
+    Model* sponzaModel;
     Camera* mainCamera;
 
     Light* mainLight;
@@ -65,10 +65,10 @@ namespace BulletGL
         // Materials
         Material::SetUp();
 
-        // Models
-        cube = Resources::LoadModel("res/Models/sponza/sponza.obj");
+        //Models
+        sponzaModel = Resources::LoadModel("res/Models/sponza/sponza.obj");
 
-        mainCmdBuffer->DrawModel(*cube, sponzaLocalMatrix);
+        mainCmdBuffer->DrawModel(*sponzaModel, sponzaLocalMatrix);
 
         mainCamera->AddCommandBuffer(mainCmdBuffer);
     }
@@ -76,8 +76,6 @@ namespace BulletGL
     void Application::OnUpdate()
     {
         mainCamera->Update();
-
-        Texture* texture = Resources::textures[0];
 
         mainCamera->BindFrameBuffer(renderTex);
         glEnable(GL_DEPTH_TEST);

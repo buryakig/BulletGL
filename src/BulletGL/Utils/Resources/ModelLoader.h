@@ -64,7 +64,7 @@ namespace BulletGL
                 aiString file;
                 aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
-                Texture* texture = Resources::LoadTexture(texturePath.c_str(), true);
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str(), true);
                 if (texture)
                 {
                     material->SetTexture("material.texture_diffuse1", texture);
@@ -77,7 +77,7 @@ namespace BulletGL
                 aMaterial->GetTexture(aiTextureType_NORMALS, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
 
-                Texture* texture = Resources::LoadTexture(texturePath.c_str());
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str());
                 if (texture)
                 {
                     material->SetTexture("material.texture_normal", texture);
@@ -89,7 +89,7 @@ namespace BulletGL
                 aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
 
-                Texture* texture = Resources::LoadTexture(texturePath.c_str());
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str());
                 if (texture)
                 {
                     material->SetTexture("material.texture_metallic", texture);
@@ -101,7 +101,7 @@ namespace BulletGL
                 aMaterial->GetTexture(aiTextureType_SHININESS, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
 
-                Texture* texture = Resources::LoadTexture(texturePath.c_str());
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str());
                 if (texture)
                 {
                     material->SetTexture("material.texture_specular", texture);
@@ -113,7 +113,7 @@ namespace BulletGL
                 aMaterial->GetTexture(aiTextureType_AMBIENT, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
 
-                Texture* texture = Resources::LoadTexture(texturePath.c_str());
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str());
                 if (texture)
                 {
                     material->SetTexture("material.texture_ao", texture);
@@ -128,7 +128,7 @@ namespace BulletGL
 
                 cout << "Found: " << texturePath << endl;
 
-                Texture* texture = Resources::LoadTexture(texturePath.c_str());
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str());
                 if (texture)
                 {
                     material->SetTexture("material.texture_height", texture);

@@ -1,6 +1,7 @@
 ﻿#include "UI.h"
 #include "Utils/Resources/Resources.h"
 #include "Utils/Resources/ModelLoader.h"
+#include "Texture2D.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -10,7 +11,7 @@ namespace BulletGL
 {
 	std::vector<Shader*>	Resources::shaders = {};
 	std::vector<Model*>		Resources::models = {};
-	std::vector<Texture*>	Resources::textures = {};
+	std::vector<Texture2D*>	Resources::textures = {};
 
 	Shader* Resources::LoadShader(const char* vertexPath, const char* fragmentPath)
 	{
@@ -106,11 +107,13 @@ namespace BulletGL
 		return models.back();
 	}
 
-	Texture* Resources::LoadTexture(const char* imagePath, bool srgb, unsigned int  filterMode)
+	Texture2D* Resources::LoadTexture(const char* imagePath, bool srgb, unsigned int  filterMode)
 	{
-		Texture* texture = new Texture();
-		int nrChannels = 0;
-		texture->data = stbi_load(imagePath, &texture->width, &texture->height, &nrChannels, 0);
+		Texture2D* texture = new Texture2D();
+
+		texture->filterMode = filterMode;
+
+		texture->data = stbi_load(imagePath, &texture->width, &texture->height, &texture->nrChannels, 0);
 		if (!texture->data)
 		{
 			std::cout << "Failed to load texture" << std::endl;
@@ -121,27 +124,28 @@ namespace BulletGL
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &texture->id);
 
+
 		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTextureParameteri(texture->id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTextureParameteri(texture->id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(texture->id, GL_TEXTURE_MIN_FILTER, texture->filterMode);
+		glTextureParameteri(texture->id, GL_TEXTURE_MAG_FILTER, texture->filterMode);
 
-		if (nrChannels == 1)
+		if (texture->nrChannels == 1)
 		{
 			texture->format = GL_RED;
 			texture->internalFormat = GL_R8;
 		}
-		else if (nrChannels == 2)
+		else if (texture->nrChannels == 2)
 		{
 			texture->format = GL_RG;
 			texture->internalFormat = GL_RG8;
 		}
-		else if (nrChannels == 3)
+		else if (texture->nrChannels == 3)
 		{
 			texture->format = GL_RGB;
 			texture->internalFormat = srgb ? GL_SRGB8 : GL_RGB8;
 		}
-		else if (nrChannels == 4)
+		else if (texture->nrChannels == 4)
 		{
 			texture->format = GL_RGBA;
 			texture->internalFormat = srgb ? GL_SRGB8_ALPHA8 : GL_RGBA8;

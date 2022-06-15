@@ -10,7 +10,6 @@
 
 #include "Mesh.h"
 #include "Material.h"
-#include "Texture.h"
 
 #include <string>
 #include <fstream>

@@ -8,7 +8,7 @@ namespace BulletGL
 	public:
 		Texture() = default;
 		Texture(int w, int h) : width(w), height(h) {}
-		virtual ~Texture();
+		virtual ~Texture() {}
 
 
 		unsigned int id = 0;
@@ -17,18 +17,15 @@ namespace BulletGL
 		int height = 0;
 
 		int filterMode = 0;
-		//int nrChannels = 3;
 		int mipmapCount = 1;
-		unsigned int format = 0;
-		unsigned int internalFormat = 0;
+		unsigned int format = GL_RGBA;
+		unsigned int internalFormat = GL_RGBA32F;
 
-		unsigned int wrapModeU = 0;
-		unsigned int wrapModeV = 0;
-		unsigned int wrapModeW = 0;
+		unsigned int wrapModeU = GL_REPEAT;
+		unsigned int wrapModeV = GL_REPEAT;
+		unsigned int wrapModeW = GL_REPEAT;
 
-		std::string name;
-
-		unsigned char* data = nullptr;
+		std::string name = "";
 	};
 
 }

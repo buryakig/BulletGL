@@ -1,33 +1,17 @@
 #pragma once
 #include "Core.h"
+#include "Texture.h"
 
 namespace BulletGL
 {
-	class Texture
+	class Texture2D : public Texture
 	{
 	public:
-		Texture() = default;
-		Texture(int w, int h) : width(w), height(h) {}
-		virtual ~Texture();
+		Texture2D() = default;
+		Texture2D(int w, int h) : Texture(w, h) {}
+		virtual ~Texture2D();
 
-
-		unsigned int id = 0;
-
-		int width = 0;
-		int height = 0;
-
-		int filterMode = 0;
-		int nrChannels = 3;
-		int mipmapCount = 1;
-		unsigned int format = 0;
-		unsigned int internalFormat = 0;
-
-		unsigned int wrapModeU = 0;
-		unsigned int wrapModeV = 0;
-		unsigned int wrapModeW = 0;
-
-		std::string name;
-
+		int nrChannels = 0;
 		unsigned char* data = nullptr;
 	};
 
