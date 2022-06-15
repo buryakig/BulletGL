@@ -107,11 +107,12 @@ namespace BulletGL
 		return models.back();
 	}
 
-	Texture2D* Resources::LoadTexture(const char* imagePath, bool srgb, unsigned int  filterMode)
+	Texture2D* Resources::LoadTexture(const char* imagePath, bool srgb, unsigned int  filterMode, unsigned int  wrapping)
 	{
 		Texture2D* texture = new Texture2D();
 
 		texture->filterMode = filterMode;
+		texture->wrapMode = wrapping;
 
 		texture->data = stbi_load(imagePath, &texture->width, &texture->height, &texture->nrChannels, 0);
 		if (!texture->data)
@@ -124,9 +125,8 @@ namespace BulletGL
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &texture->id);
 
-
-		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_S, texture->wrapMode);
+		glTextureParameteri(texture->id, GL_TEXTURE_WRAP_T, texture->wrapMode);
 		glTextureParameteri(texture->id, GL_TEXTURE_MIN_FILTER, texture->filterMode);
 		glTextureParameteri(texture->id, GL_TEXTURE_MAG_FILTER, texture->filterMode);
 

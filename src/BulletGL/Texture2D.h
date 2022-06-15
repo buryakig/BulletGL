@@ -8,11 +8,18 @@ namespace BulletGL
 	{
 	public:
 		Texture2D() = default;
-		Texture2D(int w, int h) : Texture(w, h) {}
+		Texture2D(int w, int h, unsigned iformat, int mipCount = 1, unsigned fMode = GL_LINEAR);
 		virtual ~Texture2D();
 
-		int nrChannels = 0;
-		unsigned char* data = nullptr;
+		void SetPixels(unsigned char* pixels);
+		void SetPixels(unsigned int* pixels);
+		void SetPixels(float* pixels);
+
+		void Apply();
+
+		unsigned int dataType;
+
+		void* data = nullptr;
 	};
 
 }
