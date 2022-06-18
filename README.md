@@ -10,6 +10,7 @@ OpenGL wrapper for quick prototyping
 - Assets loading pipeline
 - Gamma correction
 - HDR
+- Bloom
 - Material pipeline
 ## Setup
 ### Windows
