@@ -34,7 +34,7 @@ namespace BulletGL
 		vectorList[name] = value;
 	}
 
-	void Material::SetTexture(std::string name, Texture2D* value)
+	void Material::SetTexture(std::string name, Texture* value)
 	{
 		textureList[name] = value;
 	}

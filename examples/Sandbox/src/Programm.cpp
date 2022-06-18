@@ -23,12 +23,20 @@ namespace BulletGL
     Shader* defaultShader;
     Shader* emptyShader;
     Shader* screenShader;
+    Shader* extractBlurShader;
+    Shader* horizontalBlurShader;
+    Shader* verticalBlurShader;
 
     Material* quadMaterial;
-    Material* litMaterial;
+    Material* extractBlurMaterial;
+    Material* hblurMaterial;
+    Material* vblurMaterial;
 
     RenderTexture* renderTex;
     RenderTexture* test_delete_me;
+    RenderTexture* extractedBlur;
+    RenderTexture* blur1;
+    RenderTexture* blur2;
 
     UI* ui;
 
@@ -51,7 +59,10 @@ namespace BulletGL
         ui->SetUp();
 
         // Render Textures
-        renderTex = new RenderTexture(window->width, window->height, GL_RGBA, GL_RGBA16F, true);
+        renderTex = new RenderTexture(window->width, window->height, 1, GL_RGBA16F, true);
+        extractedBlur = new RenderTexture(window->width, window->height, 1, GL_RGBA16F, true);
+        blur1 = new RenderTexture(window->width, window->height, 1, GL_RGBA16F, true);
+        blur2 = new RenderTexture(window->width, window->height, 1, GL_RGBA16F, true);
 
         // Matrices
         sponzaLocalMatrix = glm::mat4(1.0f);
@@ -60,15 +71,38 @@ namespace BulletGL
         // Shaders
         Shader::SetUp();
         shadowmapShader = Resources::LoadShader("res/Shaders/shadowMap.vert", "res/Shaders/shadowMap.frag");
-        screenShader = Resources::LoadShader("res/Shaders/screenShader.vert", "res/Shaders/screenShader.frag");
+        screenShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/screenShader.frag");
+        extractBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/extractBlur.frag");
+        horizontalBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/horizontalBlur.frag");
+        verticalBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/verticalBlur.frag");
 
         // Materials
         Material::SetUp();
 
-        //Models
+        quadMaterial = new Material(screenShader);
+        quadMaterial->SetTexture("_BloomTex", blur1);
+
+        extractBlurMaterial = new Material(extractBlurShader);
+        hblurMaterial = new Material(horizontalBlurShader);
+        vblurMaterial = new Material(verticalBlurShader);
+
+        // Models
         sponzaModel = Resources::LoadModel("res/Models/sponza/sponza.obj");
 
+        // CommandBuffer routine
+        mainCmdBuffer->SetRenderTaget(renderTex);
         mainCmdBuffer->DrawModel(*sponzaModel, sponzaLocalMatrix);
+
+        mainCmdBuffer->Blit(renderTex, extractedBlur, extractBlurMaterial);
+        mainCmdBuffer->Blit(extractedBlur, blur1, hblurMaterial);
+        
+        for (int i = 0; i < 10; ++i)
+        {
+            mainCmdBuffer->Blit(blur1, blur2, hblurMaterial);
+            mainCmdBuffer->Blit(blur2, blur1, vblurMaterial);
+        }
+
+        mainCmdBuffer->Blit(renderTex, nullptr, quadMaterial);
 
         mainCamera->AddCommandBuffer(mainCmdBuffer);
     }
@@ -76,24 +110,14 @@ namespace BulletGL
     void Application::OnUpdate()
     {
         mainCamera->Update();
-
-        mainCamera->BindFrameBuffer(renderTex);
-        glEnable(GL_DEPTH_TEST);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mainCamera->ExecuteCommandBuffers();
+        
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                
-        screenShader->use();
-        glUniform1i(glGetUniformLocation(screenShader->programID, "screenTex"),
-                        0);
-        glBindTextureUnit(0, renderTex->id);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
+        ImGui::Begin("OpenGL Texture Text");
+        ImGui::Text("pointer = %p", blur1->id);
+        ImGui::Text("size = %d x %d", 1024, 1024);
+        ImGui::Image((void*)(intptr_t)blur1->id, ImVec2(1024, 1024));
+        ImGui::End();
 
         ui->Draw();
     }
@@ -105,6 +129,8 @@ namespace BulletGL
         delete mainCamera;
         delete mainCmdBuffer;
         delete ui;
+        delete renderTex;
+        delete extractedBlur;
 
         Resources::DeallocateMemory();
         Material::DeallocateMemory();

@@ -139,9 +139,9 @@ void main()
     if(diffuse.a < 0.5) discard;
 
     dirLight.direction = normalize(vec3(-1.0, -1.0 , -1.0));
-    dirLight.ambient = vec3(0.1, 0.1 , 0.1);
-    dirLight.diffuse = vec3(0.65, 0.55 , 0.5);
-    dirLight.specular = vec3(0.5, 0.45 , 0.4);
+    dirLight.ambient = vec3(0.5, 0.5 , 0.3);
+    dirLight.diffuse = vec3(0.95, 0.85 , 0.6);
+    dirLight.specular = vec3(0.85, 0.75 , 0.5);
 
     // properties
     vec3 viewDir = normalize(cameraPos.xyz - FragPos);

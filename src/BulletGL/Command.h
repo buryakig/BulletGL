@@ -1,5 +1,6 @@
 #include "Core.h"
 #include "Model.h"
+#include "RenderTexture.h"
 #include "Material.h"
 
 namespace BulletGL
@@ -29,4 +30,50 @@ namespace BulletGL
 
 		void Execute() override;
 	};
+
+	class SetRenderTargetCommand : public Command
+	{
+	public:
+		SetRenderTargetCommand() :
+			renderTarget(nullptr)    	{}
+		SetRenderTargetCommand(RenderTexture* rT) :
+			renderTarget(rT)    	{}
+		~SetRenderTargetCommand()	{}
+
+		RenderTexture* renderTarget;
+
+		void Execute() override;
+	};
+
+	class BlitCommand : public Command
+	{
+	public:
+		BlitCommand(Texture* src, RenderTexture* dest = nullptr, Material* mat = nullptr)
+			: source(src), destination(dest), material(mat){}
+		~BlitCommand()	{}
+
+		Texture* source;
+		RenderTexture* destination;
+		Material* material;
+
+		static const Material const* defaultMat;
+
+		void Execute() override;
+	};
+
+	class SwapCommand : public Command
+	{
+	public:
+		SwapCommand(Texture*& t1, Texture*& t2)
+			: firstTex(t1), secondTex(t2){}
+		~SwapCommand()	{}
+
+		Texture*& firstTex;
+		Texture*& secondTex;
+
+		static const Material const* defaultMat;
+
+		void Execute() override;
+	};
+
 }
