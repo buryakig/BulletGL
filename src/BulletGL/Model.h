@@ -27,7 +27,6 @@ namespace BulletGL
         // model data 
         map<Mesh*, Material*>    meshes;
         string directory;
-        bool gammaCorrection;
 
         // constructor, expects a filepath to a 3D model.
         Model()

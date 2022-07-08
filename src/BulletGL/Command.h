@@ -56,7 +56,7 @@ namespace BulletGL
 		RenderTexture* destination;
 		Material* material;
 
-		static const Material const* defaultMat;
+		static  Material const * const defaultMat;
 
 		void Execute() override;
 	};
@@ -71,7 +71,7 @@ namespace BulletGL
 		Texture*& firstTex;
 		Texture*& secondTex;
 
-		static const Material const* defaultMat;
+		static  Material const * const defaultMat;
 
 		void Execute() override;
 	};

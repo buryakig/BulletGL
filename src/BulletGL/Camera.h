@@ -11,8 +11,8 @@ namespace BulletGL
 {
 
 	struct PerFrameCameraData {
-		glm::mat4 mvp;
-		glm::vec3 cameraPos;
+		glm::mat4 mvp{ 0.0 };
+		glm::vec3 cameraPos{ 0.0 };
 	};
 
 	class Camera
@@ -20,10 +20,15 @@ namespace BulletGL
 	public:
 
 
-		Camera(Window* w) : fov(60)
+		Camera(Window* w) 
+			: cameraData{}
+			, fov{60}
+			, cameraToWorldMatrix{ 0.0 }
+			, viewProjectionMatrix{ 0.0 }
+			, window{ w }
+			, transform{ new Transform() }
+			, cameraUniformBuffer{0}
 		{
-			window = w;
-			transform = new Transform();
 			transform->position = glm::vec3(0.0, 0.0, -10.0);
 		}
 

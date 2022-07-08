@@ -66,19 +66,19 @@ namespace BulletGL
         double xpos, ypos;
         glfwGetCursorPos(glfwWindow, &xpos, &ypos);
 
-
         if (firstMouse)
         {
-            lastX = xpos;
-            lastY = ypos;
+            lastX = static_cast<float>(xpos);
+            lastY = static_cast<float>(ypos);
             firstMouse = false;
         }
 
 
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-        lastX = xpos;
-        lastY = ypos;
+        float xoffset = static_cast<float>(xpos) - lastX;
+        float yoffset = lastY - static_cast<float>(ypos); // reversed since y-coordinates go from bottom to top
+
+        lastX = static_cast<float>(xpos);
+        lastY = static_cast<float>(ypos);
 
 
         if (state == GLFW_PRESS)
