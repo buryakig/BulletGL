@@ -57,17 +57,18 @@ namespace BulletGL
 
         static Material* parseMaterial(aiMesh* assimpMesh, aiMaterial* aMaterial, const aiScene* aScene, std::string directory)
         {
-            Material* material = new Material(Shader::defaultShader);
+            Material* material = new Material(Material::defaultMaterial);
 
             if (aMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
             {
                 aiString file;
                 aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
                 std::string texturePath = directory + "/" + file.C_Str();
-                Texture2D* texture = Resources::LoadTexture(texturePath.c_str(), true);
+                Texture2D* texture = Resources::LoadTexture(texturePath.c_str(), false);
                 if (texture)
                 {
-                    material->SetTexture("material.texture_diffuse1", texture);
+                    material->SetTexture("material.texture_diffuse", texture);
+                    cout << "material.texture_diffuse" << endl;
                 }
             }
 
@@ -81,6 +82,7 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_normal", texture);
+                    cout << "material.texture_normal" << endl;
                 }
             }
             if (aMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0)
@@ -93,6 +95,7 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_metallic", texture);
+                    cout << "material.texture_metallic" << endl;
                 }
             }
             if (aMaterial->GetTextureCount(aiTextureType_SHININESS) > 0)
@@ -105,6 +108,7 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_specular", texture);
+                    cout << "material.texture_specular" << endl;
                 }
             }
             if (aMaterial->GetTextureCount(aiTextureType_AMBIENT) > 0)
@@ -117,6 +121,7 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_ao", texture);
+                    cout << "material.texture_ao" << endl;
                 }
             }
 
@@ -132,6 +137,7 @@ namespace BulletGL
                 if (texture)
                 {
                     material->SetTexture("material.texture_height", texture);
+                    cout << "material.texture_height" << endl;
                 }
             }
 

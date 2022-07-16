@@ -1,0 +1,14 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kn rustediron2_normal.png
+map_Kd rustediron2_basecolor.png
+map_Ns rustediron2_roughness.png
+map_Ks rustediron2_metallic.png

@@ -15,6 +15,8 @@
 namespace BulletGL
 {
     Model* sponzaModel;
+    Model* sphereModel;
+    Model* cubeModel;
     Camera* mainCamera;
 
     Light* mainLight;
@@ -37,6 +39,8 @@ namespace BulletGL
     RenderTexture* extractedBlur;
     RenderTexture* blur1;
     RenderTexture* blur2;
+
+    Texture* envMap;
 
     UI* ui;
 
@@ -66,7 +70,7 @@ namespace BulletGL
 
         // Matrices
         sponzaLocalMatrix = glm::mat4(1.0f);
-        sponzaLocalMatrix = glm::scale(sponzaLocalMatrix, glm::vec3(0.1, 0.1, 0.1));
+        //sponzaLocalMatrix = glm::scale(sponzaLocalMatrix, glm::vec3(0.1, 0.1, 0.1));
 
         // Shaders
         Shader::SetUp();
@@ -75,6 +79,8 @@ namespace BulletGL
         extractBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/extractBlur.frag");
         horizontalBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/horizontalBlur.frag");
         verticalBlurShader = Resources::LoadShader("res/Shaders/blitShader.vert", "res/Shaders/verticalBlur.frag");
+
+        // Textures
 
         // Materials
         Material::SetUp();
@@ -86,21 +92,25 @@ namespace BulletGL
         hblurMaterial = new Material(horizontalBlurShader);
         vblurMaterial = new Material(verticalBlurShader);
 
+
         // Models
-        sponzaModel = Resources::LoadModel("res/Models/sponza/sponza.obj");
+        //sponzaModel = Resources::LoadModel("res/Models/teapot_pbr/uploads_files_3449455_teapotf.obj");
+        sphereModel = Resources::LoadModel("res/Models/Sphere/3d-model.obj");
+
+        cubeModel = Resources::LoadModel("res/Models/Cube/cube.obj");
 
         // CommandBuffer routine
         mainCmdBuffer->SetRenderTaget(renderTex);
-        mainCmdBuffer->DrawModel(*sponzaModel, sponzaLocalMatrix);
+        mainCmdBuffer->DrawModel(*sphereModel, sponzaLocalMatrix);
 
-        mainCmdBuffer->Blit(renderTex, extractedBlur, extractBlurMaterial);
-        mainCmdBuffer->Blit(extractedBlur, blur1, hblurMaterial);
-        
-        for (int i = 0; i < 10; ++i)
-        {
-            mainCmdBuffer->Blit(blur1, blur2, hblurMaterial);
-            mainCmdBuffer->Blit(blur2, blur1, vblurMaterial);
-        }
+        //mainCmdBuffer->Blit(renderTex, extractedBlur, extractBlurMaterial);
+        //mainCmdBuffer->Blit(extractedBlur, blur1, hblurMaterial);
+        //
+        //for (int i = 0; i < 10; ++i)
+        //{
+        //    mainCmdBuffer->Blit(blur1, blur2, hblurMaterial);
+        //    mainCmdBuffer->Blit(blur2, blur1, vblurMaterial);
+        //}
 
         mainCmdBuffer->Blit(renderTex, nullptr, quadMaterial);
 
@@ -113,11 +123,11 @@ namespace BulletGL
         mainCamera->ExecuteCommandBuffers();
         
 
-        ImGui::Begin("OpenGL Texture Text");
-        ImGui::Text("pointer = %p", blur1->id);
-        ImGui::Text("size = %d x %d", 1024, 1024);
-        ImGui::Image((void*)(intptr_t)blur1->id, ImVec2(1024, 1024));
-        ImGui::End();
+        //ImGui::Begin("OpenGL Texture Text");
+        //ImGui::Text("pointer = %p", blur1->id);
+        //ImGui::Text("size = %d x %d", 1024, 1024);
+        //ImGui::Image((void*)(intptr_t)blur1->id, ImVec2(1024, 1024));
+        //ImGui::End();
 
         ui->Draw();
     }

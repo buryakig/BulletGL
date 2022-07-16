@@ -12,9 +12,12 @@ void main()
 	vec3 hdrColorLinear  = texture(_MainTex, oTexCoord).rgb;
 	vec3 bloomColor  = texture(_BloomTex, oTexCoord).rgb;
 
-	hdrColorLinear += bloomColor;
+	//hdrColorLinear += bloomColor;
+	//tone mapping;
+	//vec3 hdrColorMapped = vec3(1.0) - exp(-hdrColorLinear);
+	vec3 hdrColorMapped = hdrColorLinear / (hdrColorLinear + vec3(1.0));
 
-	vec3 hdrColorMapped = vec3(1.0) - exp(-hdrColorLinear);
+
 	// gamma correction 
 	vec3 resultGamma = pow(hdrColorMapped.rgb, vec3(1.0/2.2));
 	FragColor = vec4(resultGamma, 1.0);

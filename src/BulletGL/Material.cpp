@@ -48,10 +48,14 @@ namespace BulletGL
 	void Material::CreateDefaultMaterials()
 	{
 		defaultMaterial = new Material(Shader::defaultShader);
+		Texture2D* envMap = Resources::LoadTexture("res/Textures/Ice_Lake/Ice_Lake_Ref.hdr");
+		defaultMaterial->SetTexture("envMap", envMap);
+
 		emptyMaterial = new Material(Shader::emptyShader);
 
 		Texture2D* uv_map = Resources::LoadTexture("res/Textures/uv_mapper.jpg");
 		emptyMaterial->SetTexture("texImage", uv_map);
+
 	}
 
 	unsigned int Material::GetUniformLocation(const std::string& uniformName)

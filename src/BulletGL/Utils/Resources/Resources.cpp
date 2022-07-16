@@ -133,22 +133,22 @@ namespace BulletGL
 		if (texture->nrChannels == 1)
 		{
 			texture->format = GL_RED;
-			texture->internalFormat = GL_R8;
+			texture->internalFormat = GL_R16F;
 		}
 		else if (texture->nrChannels == 2)
 		{
 			texture->format = GL_RG;
-			texture->internalFormat = GL_RG8;
+			texture->internalFormat = GL_RG16F;
 		}
 		else if (texture->nrChannels == 3)
 		{
 			texture->format = GL_RGB;
-			texture->internalFormat = srgb ? GL_SRGB8 : GL_RGB8;
+			texture->internalFormat = srgb ? GL_SRGB8 : GL_RGB16F;
 		}
 		else if (texture->nrChannels == 4)
 		{
 			texture->format = GL_RGBA;
-			texture->internalFormat = srgb ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+			texture->internalFormat = srgb ? GL_SRGB8_ALPHA8 : GL_RGBA16F;
 		}
 
 		glTextureStorage2D(texture->id, 6, texture->internalFormat, texture->width, texture->height);

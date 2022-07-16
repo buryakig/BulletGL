@@ -1,0 +1,16 @@
+# Blender MTL File: 'uploads_files_3449455_teapotf.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.426534 0.380034
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kn TEAPOTblack_Normal.png
+map_Kd TEAPOTblack_Albedo.png
+map_Ns TEAPOTblack_Roughness.png
+refl TEAPOTblack_Metalness.png
